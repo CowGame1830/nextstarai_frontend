@@ -1,64 +1,214 @@
-import Image from "next/image";
+'use client';
+
+import { useState, useMemo } from 'react';
+import React from "react";
+import PlayerCard from '@/components/PlayerCard';
+import FilterBar from '@/components/FilterBar';
+import { players as mockPlayers } from '@/app/data/players';
+import { Player } from '@/types/player';
+import { TrendingUp, Users, Target, Award, Shield, Zap, Heart } from 'lucide-react';
+import Link from 'next/link';
+import { useFavorites } from '@/hooks/useFavorites';
 
 export default function Home() {
+  const [positionFilter, setPositionFilter] = useState('all');
+  const [sortBy, setSortBy] = useState('rating');
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const { favorites, isLoaded, toggleFavorite, isFavorite, getFavoriteCount } = useFavorites();
+
+  // Filter and sort players
+  const filteredAndSortedPlayers = useMemo(() => {
+    let filtered = mockPlayers;
+
+    // Filter by position
+    if (positionFilter !== 'all') {
+      filtered = filtered.filter(player => player.position === positionFilter);
+    }
+
+    // Sort players
+    filtered.sort((a, b) => {
+      switch (sortBy) {
+        case 'rating':
+          return b.stats.rating - a.stats.rating;
+        case 'aiScore':
+          return b.aiAnalysis.overallScore - a.aiAnalysis.overallScore;
+        case 'marketValue':
+          return b.aiAnalysis.marketValue - a.aiAnalysis.marketValue;
+        case 'age':
+          return a.age - b.age;
+        case 'goals':
+          return b.stats.goals - a.stats.goals;
+        case 'assists':
+          return b.stats.assists - a.stats.assists;
+        default:
+          return 0;
+      }
+    });
+
+    return filtered;
+  }, [positionFilter, sortBy]);
+
+  // Calculate dashboard stats
+  const totalPlayers = mockPlayers.length;
+  const avgRating = (mockPlayers.reduce((sum, player) => sum + player.stats.rating, 0) / totalPlayers).toFixed(1);
+  const avgAIScore = Math.round(mockPlayers.reduce((sum, player) => sum + player.aiAnalysis.overallScore, 0) / totalPlayers);
+  const totalMarketValue = mockPlayers.reduce((sum, player) => sum + player.aiAnalysis.marketValue, 0);
+  const favoriteCount = getFavoriteCount();
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <div className="min-h-screen" style={{ background: 'var(--background)' }}>
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Dashboard Header */}
+        <div className="mb-12 text-center animate-fade-in">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 gradient-text">
+            Liverpool FC Dashboard
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <p className="text-xl max-w-2xl mx-auto" style={{ color: 'var(--muted)' }}>
+            AI-powered analytics and insights for Liverpool Football Club
           </p>
+          <div className="mt-6 flex justify-center">
+            <div className="w-24 h-1 bg-purple-gradient rounded-full"></div>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-12">
+          <div className="rounded-2xl shadow-lg border p-6 card-hover animate-scale-in relative overflow-hidden" style={{ background: 'var(--panel)', borderColor: 'var(--purple-accent)' }}>
+            <div className="absolute top-0 right-0 w-20 h-20 bg-purple-gradient opacity-10 rounded-full -mr-10 -mt-10"></div>
+            <div className="flex items-center justify-between relative z-10">
+              <div>
+                <p className="text-sm font-medium mb-2" style={{ color: 'var(--muted)' }}>Total Players</p>
+                <p className="text-3xl font-bold" style={{ color: 'var(--foreground)' }}>{totalPlayers}</p>
+                <div className="flex items-center mt-2">
+                  <div className="w-2 h-2 bg-green-400 rounded-full mr-2"></div>
+                  <span className="text-xs text-green-600 font-medium">+12% from last month</span>
+                </div>
+              </div>
+              <div className="p-4 rounded-xl animate-float" style={{ backgroundColor: 'var(--purple-light)' }}>
+                <Users className="w-7 h-7" style={{ color: 'var(--purple-primary)' }} />
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-2xl shadow-lg border p-6 card-hover animate-scale-in relative overflow-hidden" style={{ background: 'var(--panel)', borderColor: 'var(--purple-accent)', animationDelay: '0.1s' }}>
+            <div className="absolute top-0 right-0 w-20 h-20 bg-purple-gradient opacity-10 rounded-full -mr-10 -mt-10"></div>
+            <div className="flex items-center justify-between relative z-10">
+              <div>
+                <p className="text-sm font-medium mb-2" style={{ color: 'var(--muted)' }}>Avg Rating</p>
+                <p className="text-3xl font-bold" style={{ color: 'var(--foreground)' }}>{avgRating}</p>
+                <div className="flex items-center mt-2">
+                  <div className="w-2 h-2 bg-blue-400 rounded-full mr-2"></div>
+                  <span className="text-xs text-blue-600 font-medium">+5.2% from last month</span>
+                </div>
+              </div>
+              <div className="p-4 rounded-xl animate-float" style={{ backgroundColor: 'var(--purple-light)', animationDelay: '0.5s' }}>
+                <Award className="w-7 h-7" style={{ color: 'var(--purple-primary)' }} />
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-2xl shadow-lg border p-6 card-hover animate-scale-in relative overflow-hidden" style={{ background: 'var(--panel)', borderColor: 'var(--purple-accent)', animationDelay: '0.2s' }}>
+            <div className="absolute top-0 right-0 w-20 h-20 bg-purple-gradient opacity-10 rounded-full -mr-10 -mt-10"></div>
+            <div className="flex items-center justify-between relative z-10">
+              <div>
+                <p className="text-sm font-medium mb-2" style={{ color: 'var(--muted)' }}>Avg AI Score</p>
+                <p className="text-3xl font-bold" style={{ color: 'var(--foreground)' }}>{avgAIScore}</p>
+                <div className="flex items-center mt-2">
+                  <div className="w-2 h-2 bg-purple-400 rounded-full mr-2"></div>
+                  <span className="text-xs text-purple-600 font-medium">+8.1% from last month</span>
+                </div>
+              </div>
+              <div className="p-4 rounded-xl animate-float" style={{ backgroundColor: 'var(--purple-light)', animationDelay: '1s' }}>
+                <Target className="w-7 h-7" style={{ color: 'var(--purple-primary)' }} />
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-2xl shadow-lg border p-6 card-hover animate-scale-in relative overflow-hidden" style={{ background: 'var(--panel)', borderColor: 'var(--purple-accent)', animationDelay: '0.3s' }}>
+            <div className="absolute top-0 right-0 w-20 h-20 bg-purple-gradient opacity-10 rounded-full -mr-10 -mt-10"></div>
+            <div className="flex items-center justify-between relative z-10">
+              <div>
+                <p className="text-sm font-medium mb-2" style={{ color: 'var(--muted)' }}>Total Value</p>
+                <p className="text-3xl font-bold" style={{ color: 'var(--foreground)' }}>€{(totalMarketValue / 1000000).toFixed(0)}M</p>
+                <div className="flex items-center mt-2">
+                  <div className="w-2 h-2 bg-emerald-400 rounded-full mr-2"></div>
+                  <span className="text-xs text-emerald-600 font-medium">+15.3% from last month</span>
+                </div>
+              </div>
+              <div className="p-4 rounded-xl animate-float" style={{ backgroundColor: 'var(--purple-light)', animationDelay: '1.5s' }}>
+                <TrendingUp className="w-7 h-7" style={{ color: 'var(--purple-primary)' }} />
+              </div>
+            </div>
+          </div>
+
+          <Link href="/favorites" className="block">
+            <div className="rounded-2xl shadow-lg border p-6 card-hover animate-scale-in relative overflow-hidden cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-xl group" style={{ background: 'var(--panel)', borderColor: 'var(--purple-accent)', animationDelay: '0.4s' }}>
+              <div className="absolute top-0 right-0 w-20 h-20 bg-purple-gradient opacity-10 rounded-full -mr-10 -mt-10 group-hover:opacity-20 transition-opacity duration-300"></div>
+              <div className="flex items-center justify-between relative z-10">
+                <div>
+                  <p className="text-sm font-medium mb-2 group-hover:text-purple-primary transition-colors duration-300" style={{ color: 'var(--muted)' }}>Favorites</p>
+                  <p className="text-3xl font-bold group-hover:scale-110 transition-transform duration-300" style={{ color: 'var(--foreground)' }}>{isLoaded ? favoriteCount : '...'}</p>
+                  <div className="flex items-center mt-2">
+                    <div className="w-2 h-2 bg-red-400 rounded-full mr-2 group-hover:scale-125 transition-transform duration-300"></div>
+                    <span className="text-xs text-red-600 font-medium">
+                      {favoriteCount > 0 ? `${favoriteCount} player${favoriteCount !== 1 ? 's' : ''} saved` : 'No favorites yet'}
+                    </span>
+                  </div>
+                </div>
+                <div className="p-4 rounded-xl animate-float group-hover:scale-110 transition-transform duration-300" style={{ backgroundColor: 'var(--purple-light)', animationDelay: '2s' }}>
+                  <Heart className="w-7 h-7" style={{ color: 'var(--purple-primary)' }} />
+                </div>
+              </div>
+            </div>
+          </Link>
+        </div>
+
+        {/* Filter Bar */}
+        <FilterBar
+          onPositionFilter={setPositionFilter}
+          onSortChange={setSortBy}
+          onViewChange={setViewMode}
+          currentView={viewMode}
+        />
+
+        {/* Squad Analysis Section */}
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold gradient-text mb-6">Squad Analysis</h2>
+          
+          {/* Results Count */}
+          <div className="mb-6 p-4 rounded-xl border-2" style={{ backgroundColor: 'var(--panel)', borderColor: 'var(--purple-accent)' }}>
+            <p style={{ color: 'var(--muted)' }}>
+              Showing <span className="font-semibold gradient-text">{filteredAndSortedPlayers.length}</span> of{' '}
+              <span className="font-semibold">{totalPlayers}</span> Liverpool FC players
+            </p>
+          </div>
+        </div>
+
+        {/* Players Grid/List */}
+        <div className={
+          viewMode === 'grid' 
+            ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            : "space-y-4"
+        }>
+          {filteredAndSortedPlayers.map((player) => (
+            <PlayerCard 
+              key={player.id} 
+              player={player}
+              isFavorite={isFavorite(player.id)}
+              onToggleFavorite={toggleFavorite}
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+          ))}
         </div>
+
+        {/* Empty State */}
+        {filteredAndSortedPlayers.length === 0 && (
+          <div className="text-center py-12">
+            <div className="mb-4" style={{ color: 'var(--muted)' }}>
+              <Users className="w-16 h-16 mx-auto" />
+            </div>
+            <h3 className="text-lg font-medium mb-2" style={{ color: 'var(--foreground)' }}>No players found</h3>
+            <p style={{ color: 'var(--muted)' }}>Try adjusting your filters to see more results.</p>
+          </div>
+        )}
       </main>
     </div>
   );

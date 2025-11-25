@@ -1,8 +1,16 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #1a1025;
+  --foreground: #e5deff;
+  --panel: #2a1f4a;
+  --sidebar: #7c3aed;
+  --muted: #a78bfa;
+  --purple-primary: #a78bfa;
+  --purple-secondary: #c4b5fd;
+  --purple-accent: #8b5cf6;
+  --purple-light: #2a1f4a;
+  --purple-dark: #5b21b6;
 }
 
 @theme inline {
@@ -14,13 +22,356 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #1a1025;
+    --foreground: #e5deff;
+    --panel: #2a1f4a;
+    --sidebar: #7c3aed;
+    --muted: #a78bfa;
+    --purple-primary: #a78bfa;
+    --purple-secondary: #c4b5fd;
+    --purple-accent: #8b5cf6;
+    --purple-light: #2a1f4a;
+    --purple-dark: #5b21b6;
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
+
+/* Apply dark class styles for manual toggle */
+:root.dark {
+  --background: #1a1025;
+  --foreground: #e5deff;
+  --panel: #2a1f4a;
+  --sidebar: #7c3aed;
+  --muted: #a78bfa;
+  --purple-primary: #a78bfa;
+  --purple-secondary: #c4b5fd;
+  --purple-accent: #e9d7ff;
+  --purple-light: #2a1f4a;
+  --purple-dark: #5b21b6;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Smooth animations */
+* {
+  scroll-behavior: smooth;
+}
+
+/* Custom utilities */
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-up {
+  animation: slideUp 0.6s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.4s ease-out;
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+/* Custom gradients for Tailwind CSS v4 compatibility */
+.bg-linear-to-r {
+  background: linear-gradient(to right, var(--tw-gradient-stops));
+}
+
+/* Purple theme gradients */
+.card-lavender {
+  background: linear-gradient(180deg, rgba(233,215,255,0.95), rgba(196,181,253,0.9));
+}
+
+.from-purple-500 {
+  --tw-gradient-from: #8b5cf6;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(139, 92, 246, 0));
+}
+
+.to-purple-600 {
+  --tw-gradient-to: #7c3aed;
+}
+
+.from-purple-600 {
+  --tw-gradient-from: #7c3aed;
+}
+
+.to-purple-700 {
+  --tw-gradient-to: #6d28d9;
+}
+
+.from-indigo-500 {
+  --tw-gradient-from: #6366f1;
+}
+
+.hover\:from-purple-600:hover {
+  --tw-gradient-from: #7c3aed;
+}
+
+.hover\:to-purple-700:hover {
+  --tw-gradient-to: #6d28d9;
+}
+
+/* Purple-specific utilities */
+.bg-purple-gradient {
+  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 50%, #6d28d9 100%);
+}
+
+.text-purple-primary {
+  color: var(--purple-primary);
+}
+
+.bg-purple-primary {
+  background-color: var(--purple-primary);
+}
+
+.border-purple-primary {
+  border-color: var(--purple-primary);
+}
+
+/* Navigation hover effects */
+.nav-link {
+  color: var(--muted);
+  transition: color 0.2s ease;
+}
+
+.nav-link:hover {
+  color: var(--purple-primary) !important;
+}
+
+/* Button hover effects */
+.btn-purple {
+  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 50%, #6d28d9 100%);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-purple::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.btn-purple:hover::before {
+  left: 100%;
+}
+
+.btn-purple:hover {
+  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 50%, #5b21b6 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
+}
+
+/* Card hover effects */
+.card-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-hover:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(139, 92, 246, 0.15);
+}
+
+/* Glassmorphism effect */
+.glass {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed, #6d28d9);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Focus states */
+.focus-purple:focus {
+  border-color: var(--purple-primary) !important;
+  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2) !important;
+  outline: none;
+}
+
+/* Custom purple color classes for Tailwind compatibility */
+.text-purple-600 {
+  color: #7c3aed;
+}
+
+.bg-purple-100 {
+  background-color: #e9d7ff;
+}
+
+.bg-purple-200 {
+  background-color: #ddd6fe;
+}
+
+.border-purple-200 {
+  border-color: #ddd6fe;
+}
+
+.border-purple-400 {
+  border-color: #a78bfa;
+}
+
+/* Improved scrollbar styling */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--purple-light);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--purple-primary);
+  border-radius: 10px;
+  border: 2px solid var(--purple-light);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--purple-dark);
+}
+
+/* Enhanced selection styles */
+::selection {
+  background-color: var(--purple-accent);
+  color: var(--purple-dark);
+}
+
+::-moz-selection {
+  background-color: var(--purple-accent);
+  color: var(--purple-dark);
+}
+
+/* Loading animation */
+.loading-shimmer {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Gradient animation for NextStarAI text */
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Responsive improvements */
+@media (max-width: 768px) {
+  .card-hover:hover {
+    transform: translateY(-2px);
+  }
+  
+  .animate-float {
+    animation: none;
+  }
+}
+
+/* Dark mode enhancements */
+@media (prefers-color-scheme: dark) {
+  body {
+    background: var(--background);
+  }
+  
+  .glass {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+}
+
+/* Focus visible for accessibility */
+.focus-visible:focus-visible {
+  outline: 2px solid var(--purple-primary);
+  outline-offset: 2px;
+  border-radius: 8px;
 }

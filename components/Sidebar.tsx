@@ -28,13 +28,6 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
     { icon: Heart, label: 'Favorites', href: '/favorites' },
     { icon: Users, label: 'Players', href: '/players' },
     { icon: Shield, label: 'Teams', href: '/teams' },
-    { icon: BarChart3, label: 'Analytics', href: '/analytics' },
-    { icon: Trophy, label: 'Matches', href: '/matches' },
-    { icon: TrendingUp, label: 'Performance', href: '/performance' },
-    { icon: Calendar, label: 'Schedule', href: '/schedule' },
-    { icon: FileText, label: 'Reports', href: '/reports' },
-    { icon: Settings, label: 'Settings', href: '/settings' },
-    { icon: HelpCircle, label: 'Help', href: '/help' },
   ];
 
   return (

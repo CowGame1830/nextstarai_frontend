@@ -1,7 +1,8 @@
 import { NextRequest } from 'next/server';
 
-export async function GET(request: NextRequest, { params }: { params: { size: string[] } }) {
-  const [width = '150', height = '150'] = params.size || [];
+export async function GET(request: NextRequest, { params }: { params: Promise<{ size: string[] }> }) {
+  const resolvedParams = await params;
+  const [width = '150', height = '150'] = resolvedParams.size || [];
   
   // Simple SVG placeholder
   const svg = `

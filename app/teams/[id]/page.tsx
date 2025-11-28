@@ -1,15 +1,15 @@
 'use client';
 
-import { useState, useMemo } from 'react';
-import { ArrowLeft, Users, Trophy, Star, TrendingUp, BarChart3 } from 'lucide-react';
+import { useState, useMemo, use } from 'react';
+import { ArrowLeft, Users, Trophy, Star, TrendingUp, BarChart3, Handshake, MessageCircle, Zap, Target, Crown, Flame } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { players as mockPlayers } from '@/app/data/players';
 
 interface TeamDetailProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 const teamDetails = {
@@ -84,7 +84,9 @@ const teamDetails = {
 export default function TeamDetailPage({ params }: TeamDetailProps) {
   const [activeTab, setActiveTab] = useState('overview');
   
-  const team = teamDetails[params.id as keyof typeof teamDetails];
+  // Unwrap the params Promise using React.use()
+  const resolvedParams = use(params);
+  const team = teamDetails[resolvedParams.id as keyof typeof teamDetails];
   
   const teamPlayers = useMemo(() => {
     if (!team) return [];
@@ -400,7 +402,7 @@ export default function TeamDetailPage({ params }: TeamDetailProps) {
                          (e.currentTarget as HTMLElement).style.borderColor = 'var(--purple-accent)';
                        }}>
                     <span style={{ color: 'var(--muted)' }}>Squad Size</span>
-                    <span className="font-semibold" style={{ color: 'var(--foreground)' }}>{team.stats.players} players</span>
+                    <span className="font-semibold" style={{ color: 'var(--foreground)' }}>{teamPlayers.length} players</span>
                   </div>
                 </div>
               </div>
@@ -578,7 +580,7 @@ export default function TeamDetailPage({ params }: TeamDetailProps) {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   <div className="text-center p-6 rounded-xl border-2" style={{ backgroundColor: 'var(--background)', borderColor: 'var(--purple-accent)' }}>
                     <div className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center" style={{ backgroundColor: 'var(--purple-primary)' }}>
-                      <span className="text-2xl">🤝</span>
+                      <Handshake className="w-8 h-8 text-white" />
                     </div>
                     <div className="text-3xl font-bold mb-2" style={{ color: 'var(--foreground)' }}>{team.chemistry.teamCohesion}%</div>
                     <div className="text-sm font-medium" style={{ color: 'var(--muted)' }}>Team Cohesion</div>
@@ -588,7 +590,7 @@ export default function TeamDetailPage({ params }: TeamDetailProps) {
                   </div>
                   <div className="text-center p-6 rounded-xl border-2" style={{ backgroundColor: 'var(--background)', borderColor: 'var(--purple-accent)' }}>
                     <div className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center" style={{ backgroundColor: 'var(--purple-primary)' }}>
-                      <span className="text-2xl">💬</span>
+                      <MessageCircle className="w-8 h-8 text-white" />
                     </div>
                     <div className="text-3xl font-bold mb-2" style={{ color: 'var(--foreground)' }}>{team.chemistry.communicationRating}%</div>
                     <div className="text-sm font-medium" style={{ color: 'var(--muted)' }}>Communication</div>
@@ -598,7 +600,7 @@ export default function TeamDetailPage({ params }: TeamDetailProps) {
                   </div>
                   <div className="text-center p-6 rounded-xl border-2" style={{ backgroundColor: 'var(--background)', borderColor: 'var(--purple-accent)' }}>
                     <div className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center" style={{ backgroundColor: 'var(--purple-primary)' }}>
-                      <span className="text-2xl">⚡</span>
+                      <Zap className="w-8 h-8 text-white" />
                     </div>
                     <div className="text-3xl font-bold mb-2" style={{ color: 'var(--foreground)' }}>{team.chemistry.workRate}%</div>
                     <div className="text-sm font-medium" style={{ color: 'var(--muted)' }}>Work Rate</div>
@@ -608,7 +610,7 @@ export default function TeamDetailPage({ params }: TeamDetailProps) {
                   </div>
                   <div className="text-center p-6 rounded-xl border-2" style={{ backgroundColor: 'var(--background)', borderColor: 'var(--purple-accent)' }}>
                     <div className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center" style={{ backgroundColor: 'var(--purple-primary)' }}>
-                      <span className="text-2xl">🎯</span>
+                      <Target className="w-8 h-8 text-white" />
                     </div>
                     <div className="text-3xl font-bold mb-2" style={{ color: 'var(--foreground)' }}>{team.chemistry.discipline}%</div>
                     <div className="text-sm font-medium" style={{ color: 'var(--muted)' }}>Discipline</div>
@@ -618,7 +620,7 @@ export default function TeamDetailPage({ params }: TeamDetailProps) {
                   </div>
                   <div className="text-center p-6 rounded-xl border-2" style={{ backgroundColor: 'var(--background)', borderColor: 'var(--purple-accent)' }}>
                     <div className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center" style={{ backgroundColor: 'var(--purple-primary)' }}>
-                      <span className="text-2xl">👑</span>
+                      <Crown className="w-8 h-8 text-white" />
                     </div>
                     <div className="text-3xl font-bold mb-2" style={{ color: 'var(--foreground)' }}>{team.chemistry.leadership}%</div>
                     <div className="text-sm font-medium" style={{ color: 'var(--muted)' }}>Leadership</div>
@@ -628,7 +630,7 @@ export default function TeamDetailPage({ params }: TeamDetailProps) {
                   </div>
                   <div className="text-center p-6 rounded-xl border-2" style={{ backgroundColor: 'var(--background)', borderColor: 'var(--purple-accent)' }}>
                     <div className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center" style={{ backgroundColor: 'var(--purple-primary)' }}>
-                      <span className="text-2xl">🔥</span>
+                      <Flame className="w-8 h-8 text-white" />
                     </div>
                     <div className="text-3xl font-bold mb-2" style={{ color: 'var(--foreground)' }}>{team.chemistry.mentality}%</div>
                     <div className="text-sm font-medium" style={{ color: 'var(--muted)' }}>Mentality</div>

@@ -17,12 +17,18 @@ export interface PlayerAttributes {
   balance: number;
   jumping: number;
   
-  // Technical
+  // Shooting
   shooting: number;
   finishing: number;
   longShots: number;
   volleys: number;
   penalties: number;
+  
+  // Technical
+  dribbling: number;
+  ballControl: number;
+  firstTouch: number;
+  technique: number;
   
   // Passing
   passing: number;

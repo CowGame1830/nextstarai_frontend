@@ -112,7 +112,7 @@ const RadarChart = ({ attributes, title }: { attributes: Array<{ name: string, v
           const isLeft = Math.cos(angle) < -0.3;
           const isRight = Math.cos(angle) > 0.3;
           const textAnchor = isLeft ? 'end' : isRight ? 'start' : 'middle';
-          
+
           return (
             <g key={index}>
               <text
@@ -501,7 +501,7 @@ export default function PlayerDetail() {
                   </div>
                 </div>
 
-                {/* Physical Attributes */}
+                {/* Physical, Shooting, Technical, and Passing Attributes */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                   <div className="space-y-4">
                     <h3 className="text-lg font-bold gradient-text flex items-center">
@@ -550,7 +550,7 @@ export default function PlayerDetail() {
                   <div className="space-y-4">
                     <h3 className="text-lg font-bold gradient-text flex items-center">
                       <Target className="w-5 h-5 mr-2" />
-                      Technical
+                      Shooting
                     </h3>
                     {player.attributes && (
                       <div className="space-y-3">
@@ -588,6 +588,49 @@ export default function PlayerDetail() {
                     )}
                   </div>
 
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-bold gradient-text flex items-center">
+                      <TextCursor className="w-5 h-5 mr-2" />
+                      Technical
+                    </h3>
+                    {player.attributes && (
+                      <div className="space-y-3">
+                        {[
+                          { label: 'Dribbling', value: player.attributes.dribbling },
+                          { label: 'Ball Control', value: player.attributes.ballControl },
+                          { label: 'First Touch', value: player.attributes.firstTouch },
+                          { label: 'Technique', value: player.attributes.technique },
+                        ].map((attr, index) => (
+                          <div key={index} className="p-3 rounded-lg" style={{ backgroundColor: 'var(--background)' }}>
+                            <div className="flex justify-between items-center mb-2">
+                              <span style={{ color: 'var(--muted)' }}>{attr.label}</span>
+                              <span className={`font-bold px-2 py-1 rounded text-white text-sm ${attr.value >= 85 ? 'bg-green-500' :
+                                attr.value >= 75 ? 'bg-blue-500' :
+                                  attr.value >= 65 ? 'bg-yellow-500' :
+                                    attr.value >= 55 ? 'bg-orange-500' : 'bg-red-500'
+                                }`}>
+                                {attr.value}
+                              </span>
+                            </div>
+                            <div className="w-full rounded-full h-2" style={{ backgroundColor: 'var(--purple-accent)' }}>
+                              <div
+                                className={`h-2 rounded-full transition-all duration-1000 ${attr.value >= 85 ? 'bg-green-500' :
+                                  attr.value >= 75 ? 'bg-blue-500' :
+                                    attr.value >= 65 ? 'bg-yellow-500' :
+                                      attr.value >= 55 ? 'bg-orange-500' : 'bg-red-500'
+                                  }`}
+                                style={{ width: `${attr.value}%` }}
+                              ></div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Defensive and Mental Attributes */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                   <div className="space-y-4">
                     <h3 className="text-lg font-bold gradient-text flex items-center">
                       <Users className="w-5 h-5 mr-2" />
@@ -629,10 +672,7 @@ export default function PlayerDetail() {
                       </div>
                     )}
                   </div>
-                </div>
 
-                {/* Defensive and Mental Attributes */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                   <div className="space-y-4">
                     <h3 className="text-lg font-bold gradient-text flex items-center">
                       <Shield className="w-5 h-5 mr-2" />
@@ -789,12 +829,12 @@ export default function PlayerDetail() {
                             <RadarChart
                               title="Technical & Tactical Attributes"
                               attributes={[
-                                { name: 'Shooting', value: player.attributes.shooting },
+                                { name: 'Dribbling', value: player.attributes.dribbling },
+                                { name: 'Ball Control', value: player.attributes.ballControl },
                                 { name: 'Passing', value: player.attributes.passing },
                                 { name: 'Defending', value: player.attributes.defending },
                                 { name: 'Positioning', value: player.attributes.positioning },
-                                { name: 'Finishing', value: player.attributes.finishing },
-                                { name: 'Crossing', value: player.attributes.crossing },
+                                { name: 'Technique', value: player.attributes.technique },
                               ]}
                             />
                           ) : (

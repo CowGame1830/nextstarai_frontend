@@ -28,12 +28,18 @@ const generateAttributes = (position: string, overallRating: number): PlayerAttr
     balance: getRandomStat(physicalBase),
     jumping: getRandomStat(isDefender ? physicalBase + 10 : physicalBase),
     
-    // Technical
+    // Shooting
     shooting: getRandomStat(isForward ? technicalBase + 10 : isGK ? 15 : technicalBase - 5),
     finishing: getRandomStat(isForward ? technicalBase + 8 : isGK ? 20 : technicalBase - 8),
     longShots: getRandomStat(isForward || isMidfielder ? technicalBase : isGK ? 25 : technicalBase - 10),
     volleys: getRandomStat(isForward ? technicalBase + 2 : isGK ? 30 : technicalBase - 5),
     penalties: getRandomStat(isForward ? technicalBase + 5 : technicalBase - 5),
+    
+    // Technical
+    dribbling: getRandomStat(isForward || isMidfielder ? technicalBase + 8 : isGK ? 40 : technicalBase - 3),
+    ballControl: getRandomStat(isForward || isMidfielder ? technicalBase + 5 : isGK ? 50 : technicalBase),
+    firstTouch: getRandomStat(isForward || isMidfielder ? technicalBase + 3 : isGK ? 60 : technicalBase - 2),
+    technique: getRandomStat(isForward || isMidfielder ? technicalBase + 6 : isGK ? 45 : technicalBase - 1),
     
     // Passing
     passing: getRandomStat(isMidfielder || isGK ? passingBase + 15 : passingBase + 5),
@@ -97,12 +103,18 @@ export const players: Player[] = [
       balance: 80,
       jumping: 88,
       
-      // Technical
+      // Shooting
       shooting: 15,
       finishing: 20,
       longShots: 25,
       volleys: 30,
       penalties: 40,
+      
+      // Technical
+      dribbling: 45,
+      ballControl: 65,
+      firstTouch: 75,
+      technique: 70,
       
       // Passing
       passing: 85,
@@ -191,12 +203,18 @@ export const players: Player[] = [
       balance: 85,
       jumping: 93,
       
-      // Technical
+      // Shooting
       shooting: 60,
       finishing: 65,
       longShots: 70,
       volleys: 68,
       penalties: 75,
+      
+      // Technical
+      dribbling: 75,
+      ballControl: 85,
+      firstTouch: 88,
+      technique: 82,
       
       // Passing
       passing: 88,
@@ -494,12 +512,18 @@ export const players: Player[] = [
       balance: 82,
       jumping: 78,
       
-      // Technical
+      // Shooting
       shooting: 88,
       finishing: 90,
       longShots: 85,
       volleys: 82,
       penalties: 80,
+      
+      // Technical
+      dribbling: 92,
+      ballControl: 88,
+      firstTouch: 85,
+      technique: 90,
       
       // Passing
       passing: 82,

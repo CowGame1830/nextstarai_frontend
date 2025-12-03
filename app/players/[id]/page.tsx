@@ -5,12 +5,12 @@ import { useState } from 'react';
 import { players as mockPlayers } from '@/app/data/players';
 import Image from 'next/image';
 import Link from 'next/link';
-import { 
-  ArrowLeft, 
-  MapPin, 
-  Calendar, 
-  Users, 
-  Target, 
+import {
+  ArrowLeft,
+  MapPin,
+  Calendar,
+  Users,
+  Target,
   TrendingUp,
   TrendingDown,
   Star,
@@ -21,8 +21,130 @@ import {
   Shield,
   Heart,
   TextCursor,
-  User
+  User,
+  Map
 } from 'lucide-react';
+
+// Radar Chart Component
+const RadarChart = ({ attributes, title }: { attributes: Array<{ name: string, value: number }>, title: string }) => {
+  const centerX = 200;
+  const centerY = 200;
+  const maxRadius = 100;
+  const numSides = attributes.length;
+
+  // Generate pentagon/hexagon points
+  const points = attributes.map((_, index) => {
+    const angle = (index * 2 * Math.PI) / numSides - Math.PI / 2;
+    return {
+      x: centerX + Math.cos(angle) * maxRadius,
+      y: centerY + Math.sin(angle) * maxRadius,
+      labelX: centerX + Math.cos(angle) * (maxRadius + 50),
+      labelY: centerY + Math.sin(angle) * (maxRadius + 50),
+    };
+  });
+
+  // Generate data points
+  const dataPoints = attributes.map((attr, index) => {
+    const angle = (index * 2 * Math.PI) / numSides - Math.PI / 2;
+    const radius = (attr.value / 100) * maxRadius;
+    return {
+      x: centerX + Math.cos(angle) * radius,
+      y: centerY + Math.sin(angle) * radius,
+    };
+  });
+
+  return (
+    <div className="p-6 rounded-2xl border-2" style={{ backgroundColor: 'var(--purple-light)', borderColor: 'var(--purple-accent)' }}>
+      <h4 className="text-lg font-bold mb-4 text-center gradient-text">{title}</h4>
+      <svg width="400" height="400" className="mx-auto">
+        {/* Grid lines */}
+        {[0.2, 0.4, 0.6, 0.8, 1.0].map((scale, index) => (
+          <polygon
+            key={index}
+            points={points.map(point =>
+              `${centerX + (point.x - centerX) * scale},${centerY + (point.y - centerY) * scale}`
+            ).join(' ')}
+            fill="none"
+            stroke="var(--purple-accent)"
+            strokeWidth="1"
+            opacity={0.3}
+          />
+        ))}
+
+        {/* Axis lines */}
+        {points.map((point, index) => (
+          <line
+            key={index}
+            x1={centerX}
+            y1={centerY}
+            x2={point.x}
+            y2={point.y}
+            stroke="var(--purple-accent)"
+            strokeWidth="1"
+            opacity={0.3}
+          />
+        ))}
+
+        {/* Data area */}
+        <polygon
+          points={dataPoints.map(point => `${point.x},${point.y}`).join(' ')}
+          fill="var(--purple-primary)"
+          fillOpacity="0.3"
+          stroke="var(--purple-primary)"
+          strokeWidth="2"
+        />
+
+        {/* Data points */}
+        {dataPoints.map((point, index) => (
+          <circle
+            key={index}
+            cx={point.x}
+            cy={point.y}
+            r="4"
+            fill="var(--purple-primary)"
+          />
+        ))}
+
+        {/* Labels */}
+        {attributes.map((attr, index) => {
+          // Adjust text anchor based on position to prevent cutoff
+          const angle = (index * 2 * Math.PI) / numSides - Math.PI / 2;
+          const isLeft = Math.cos(angle) < -0.3;
+          const isRight = Math.cos(angle) > 0.3;
+          const textAnchor = isLeft ? 'end' : isRight ? 'start' : 'middle';
+          
+          return (
+            <g key={index}>
+              <text
+                x={points[index].labelX}
+                y={points[index].labelY - 8}
+                textAnchor={textAnchor}
+                dominantBaseline="middle"
+                fill="var(--foreground)"
+                fontSize="13"
+                fontWeight="bold"
+              >
+                {attr.name}
+              </text>
+              <text
+                x={points[index].labelX}
+                y={points[index].labelY + 8}
+                textAnchor={textAnchor}
+                dominantBaseline="middle"
+                fill="var(--purple-primary)"
+                fontSize="12"
+                fontWeight="bold"
+              >
+                {attr.value}
+              </text>
+            </g>
+          );
+        })}
+      </svg>
+    </div>
+  );
+};
+
 
 export default function PlayerDetail() {
   const params = useParams();
@@ -42,8 +164,8 @@ export default function PlayerDetail() {
             <p className="text-lg mb-8" style={{ color: 'var(--muted)' }}>
               The player you're looking for doesn't exist in our database.
             </p>
-            <Link 
-              href="/players" 
+            <Link
+              href="/players"
               className="inline-flex items-center space-x-2 text-white px-6 py-3 rounded-xl hover:shadow-lg transition-all duration-200 font-medium"
               style={{ background: 'var(--purple-primary)' }}
             >
@@ -58,6 +180,7 @@ export default function PlayerDetail() {
   const tabs = [
     { id: 'overview', label: 'Overview', icon: Activity },
     { id: 'stats', label: 'Statistics', icon: BarChart3 },
+    { id: 'attributes', label: 'Attributes', icon: Target },
     { id: 'ai-analysis', label: 'AI Analysis', icon: Zap },
   ];
 
@@ -65,11 +188,11 @@ export default function PlayerDetail() {
     <div className="min-h-screen" style={{ background: 'var(--background)' }}>
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Back Button */}
-        <Link 
+        <Link
           href="/players"
           className="inline-flex items-center space-x-2 mb-8 px-4 py-2 rounded-lg border-2 transition-all duration-200 hover:shadow-lg"
-          style={{ 
-            color: 'var(--foreground)', 
+          style={{
+            color: 'var(--foreground)',
             borderColor: 'var(--purple-accent)',
             backgroundColor: 'var(--panel)'
           }}
@@ -86,7 +209,7 @@ export default function PlayerDetail() {
               #{player.id}
             </div>
           </div>
-          
+
           <div className="px-8 py-8">
             <div className="flex flex-col lg:flex-row lg:items-center lg:space-x-8">
               {/* Player Photo */}
@@ -150,7 +273,7 @@ export default function PlayerDetail() {
                     </div>
                   </div>
                   <div className="text-center p-4 rounded-xl relative overflow-hidden border-2" style={{ backgroundColor: 'var(--background)', borderColor: 'var(--purple-accent)' }}>
-                    <div className="absolute inset-0 opacity-10" style={{ background: 'var(--purple-primary)' }}></div>  
+                    <div className="absolute inset-0 opacity-10" style={{ background: 'var(--purple-primary)' }}></div>
                     <div className="relative z-10">
                       <div className="text-3xl font-bold mb-1" style={{ color: 'var(--foreground)' }}>{player.stats.assists}</div>
                       <div className="text-sm font-medium" style={{ color: 'var(--muted)' }}>Assists</div>
@@ -200,11 +323,10 @@ export default function PlayerDetail() {
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`flex items-center space-x-2 py-4 border-b-2 font-medium text-sm transition-all duration-200 ${
-                      activeTab === tab.id
-                        ? 'border-purple-primary text-purple-primary'
-                        : 'border-transparent hover:border-purple-accent'
-                    }`}
+                    className={`flex items-center space-x-2 py-4 border-b-2 font-medium text-sm transition-all duration-200 ${activeTab === tab.id
+                      ? 'border-purple-primary text-purple-primary'
+                      : 'border-transparent hover:border-purple-accent'
+                      }`}
                     style={{
                       color: activeTab === tab.id ? 'var(--purple-primary)' : 'var(--muted)',
                       borderBottomColor: activeTab === tab.id ? 'var(--purple-primary)' : 'transparent'
@@ -281,20 +403,20 @@ export default function PlayerDetail() {
                         <span className="font-bold" style={{ color: 'var(--purple-primary)' }}>{player.stats.goals}</span>
                       </div>
                       <div className="w-full rounded-full h-3" style={{ backgroundColor: 'var(--purple-accent)' }}>
-                        <div 
+                        <div
                           className="bg-purple-gradient h-3 rounded-full"
                           style={{ width: `${Math.min(player.stats.goals * 4, 100)}%` }}
                         ></div>
                       </div>
                     </div>
-                    
+
                     <div className="p-4 rounded-xl" style={{ backgroundColor: 'var(--purple-light)' }}>
                       <div className="flex justify-between items-center mb-3">
                         <span style={{ color: 'var(--muted)' }}>Assists</span>
                         <span className="font-bold" style={{ color: 'var(--purple-primary)' }}>{player.stats.assists}</span>
                       </div>
                       <div className="w-full rounded-full h-3" style={{ backgroundColor: 'var(--purple-accent)' }}>
-                        <div 
+                        <div
                           className="bg-purple-gradient h-3 rounded-full"
                           style={{ width: `${Math.min(player.stats.assists * 6, 100)}%` }}
                         ></div>
@@ -313,20 +435,20 @@ export default function PlayerDetail() {
                         <span className="font-bold" style={{ color: 'var(--purple-primary)' }}>{player.stats.rating}</span>
                       </div>
                       <div className="w-full rounded-full h-3" style={{ backgroundColor: 'var(--purple-accent)' }}>
-                        <div 
+                        <div
                           className="bg-purple-gradient h-3 rounded-full"
                           style={{ width: `${player.stats.rating}%` }}
                         ></div>
                       </div>
                     </div>
-                    
+
                     <div className="p-4 rounded-xl" style={{ backgroundColor: 'var(--purple-light)' }}>
                       <div className="flex justify-between items-center mb-3">
                         <span style={{ color: 'var(--muted)' }}>Appearances</span>
                         <span className="font-bold" style={{ color: 'var(--purple-primary)' }}>{player.stats.appearances}</span>
                       </div>
                       <div className="w-full rounded-full h-3" style={{ backgroundColor: 'var(--purple-accent)' }}>
-                        <div 
+                        <div
                           className="bg-purple-gradient h-3 rounded-full"
                           style={{ width: `${Math.min(player.stats.appearances * 2.5, 100)}%` }}
                         ></div>
@@ -348,7 +470,7 @@ export default function PlayerDetail() {
                         <span className="text-4xl">🟨</span>
                       </div>
                     </div>
-                    
+
                     <div className="p-4 rounded-xl" style={{ backgroundColor: 'var(--purple-light)' }}>
                       <div className="flex justify-between items-center mb-3">
                         <span style={{ color: 'var(--muted)' }}>Red Cards</span>
@@ -357,6 +479,339 @@ export default function PlayerDetail() {
                       <div className="text-center py-2">
                         <span className="text-4xl">🟥</span>
                       </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'attributes' && (
+              <div className="space-y-8">
+                {/* Overall Rating */}
+                <div className="text-center p-8 rounded-2xl border-2" style={{ backgroundColor: 'var(--purple-light)', borderColor: 'var(--purple-accent)' }}>
+                  <div className="text-6xl font-bold mb-4 gradient-text">{player.aiAnalysis.overallScore}</div>
+                  <div className="text-xl mb-4" style={{ color: 'var(--muted)' }}>Overall Rating</div>
+                  <div className="max-w-md mx-auto">
+                    <div className="w-full rounded-full h-3" style={{ backgroundColor: 'var(--purple-accent)' }}>
+                      <div
+                        className="bg-purple-gradient h-3 rounded-full transition-all duration-1000"
+                        style={{ width: `${player.aiAnalysis.overallScore}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Physical Attributes */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-bold gradient-text flex items-center">
+                      <Zap className="w-5 h-5 mr-2" />
+                      Physical
+                    </h3>
+                    {player.attributes && (
+                      <div className="space-y-3">
+                        {[
+                          { label: 'Pace', value: player.attributes.pace },
+                          { label: 'Acceleration', value: player.attributes.acceleration },
+                          { label: 'Sprint Speed', value: player.attributes.sprintSpeed },
+                          { label: 'Stamina', value: player.attributes.stamina },
+                          { label: 'Strength', value: player.attributes.strength },
+                          { label: 'Agility', value: player.attributes.agility },
+                          { label: 'Balance', value: player.attributes.balance },
+                          { label: 'Jumping', value: player.attributes.jumping },
+                        ].map((attr, index) => (
+                          <div key={index} className="p-3 rounded-lg" style={{ backgroundColor: 'var(--background)' }}>
+                            <div className="flex justify-between items-center mb-2">
+                              <span style={{ color: 'var(--muted)' }}>{attr.label}</span>
+                              <span className={`font-bold px-2 py-1 rounded text-white text-sm ${attr.value >= 85 ? 'bg-green-500' :
+                                attr.value >= 75 ? 'bg-blue-500' :
+                                  attr.value >= 65 ? 'bg-yellow-500' :
+                                    attr.value >= 55 ? 'bg-orange-500' : 'bg-red-500'
+                                }`}>
+                                {attr.value}
+                              </span>
+                            </div>
+                            <div className="w-full rounded-full h-2" style={{ backgroundColor: 'var(--purple-accent)' }}>
+                              <div
+                                className={`h-2 rounded-full transition-all duration-1000 ${attr.value >= 85 ? 'bg-green-500' :
+                                  attr.value >= 75 ? 'bg-blue-500' :
+                                    attr.value >= 65 ? 'bg-yellow-500' :
+                                      attr.value >= 55 ? 'bg-orange-500' : 'bg-red-500'
+                                  }`}
+                                style={{ width: `${attr.value}%` }}
+                              ></div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-bold gradient-text flex items-center">
+                      <Target className="w-5 h-5 mr-2" />
+                      Technical
+                    </h3>
+                    {player.attributes && (
+                      <div className="space-y-3">
+                        {[
+                          { label: 'Shooting', value: player.attributes.shooting },
+                          { label: 'Finishing', value: player.attributes.finishing },
+                          { label: 'Long Shots', value: player.attributes.longShots },
+                          { label: 'Volleys', value: player.attributes.volleys },
+                          { label: 'Penalties', value: player.attributes.penalties },
+                        ].map((attr, index) => (
+                          <div key={index} className="p-3 rounded-lg" style={{ backgroundColor: 'var(--background)' }}>
+                            <div className="flex justify-between items-center mb-2">
+                              <span style={{ color: 'var(--muted)' }}>{attr.label}</span>
+                              <span className={`font-bold px-2 py-1 rounded text-white text-sm ${attr.value >= 85 ? 'bg-green-500' :
+                                attr.value >= 75 ? 'bg-blue-500' :
+                                  attr.value >= 65 ? 'bg-yellow-500' :
+                                    attr.value >= 55 ? 'bg-orange-500' : 'bg-red-500'
+                                }`}>
+                                {attr.value}
+                              </span>
+                            </div>
+                            <div className="w-full rounded-full h-2" style={{ backgroundColor: 'var(--purple-accent)' }}>
+                              <div
+                                className={`h-2 rounded-full transition-all duration-1000 ${attr.value >= 85 ? 'bg-green-500' :
+                                  attr.value >= 75 ? 'bg-blue-500' :
+                                    attr.value >= 65 ? 'bg-yellow-500' :
+                                      attr.value >= 55 ? 'bg-orange-500' : 'bg-red-500'
+                                  }`}
+                                style={{ width: `${attr.value}%` }}
+                              ></div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-bold gradient-text flex items-center">
+                      <Users className="w-5 h-5 mr-2" />
+                      Passing
+                    </h3>
+                    {player.attributes && (
+                      <div className="space-y-3">
+                        {[
+                          { label: 'Passing', value: player.attributes.passing },
+                          { label: 'Short Passing', value: player.attributes.shortPassing },
+                          { label: 'Long Passing', value: player.attributes.longPassing },
+                          { label: 'Crossing', value: player.attributes.crossing },
+                          { label: 'Free Kicks', value: player.attributes.freeKicks },
+                          { label: 'Curve', value: player.attributes.curve },
+                        ].map((attr, index) => (
+                          <div key={index} className="p-3 rounded-lg" style={{ backgroundColor: 'var(--background)' }}>
+                            <div className="flex justify-between items-center mb-2">
+                              <span style={{ color: 'var(--muted)' }}>{attr.label}</span>
+                              <span className={`font-bold px-2 py-1 rounded text-white text-sm ${attr.value >= 85 ? 'bg-green-500' :
+                                attr.value >= 75 ? 'bg-blue-500' :
+                                  attr.value >= 65 ? 'bg-yellow-500' :
+                                    attr.value >= 55 ? 'bg-orange-500' : 'bg-red-500'
+                                }`}>
+                                {attr.value}
+                              </span>
+                            </div>
+                            <div className="w-full rounded-full h-2" style={{ backgroundColor: 'var(--purple-accent)' }}>
+                              <div
+                                className={`h-2 rounded-full transition-all duration-1000 ${attr.value >= 85 ? 'bg-green-500' :
+                                  attr.value >= 75 ? 'bg-blue-500' :
+                                    attr.value >= 65 ? 'bg-yellow-500' :
+                                      attr.value >= 55 ? 'bg-orange-500' : 'bg-red-500'
+                                  }`}
+                                style={{ width: `${attr.value}%` }}
+                              ></div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Defensive and Mental Attributes */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-bold gradient-text flex items-center">
+                      <Shield className="w-5 h-5 mr-2" />
+                      Defensive
+                    </h3>
+                    {player.attributes && (
+                      <div className="space-y-3">
+                        {[
+                          { label: 'Defending', value: player.attributes.defending },
+                          { label: 'Interceptions', value: player.attributes.interceptions },
+                          { label: 'Standing Tackle', value: player.attributes.tacklingStanding },
+                          { label: 'Sliding Tackle', value: player.attributes.tacklingSliding },
+                          { label: 'Heading', value: player.attributes.heading },
+                        ].map((attr, index) => (
+                          <div key={index} className="p-3 rounded-lg" style={{ backgroundColor: 'var(--background)' }}>
+                            <div className="flex justify-between items-center mb-2">
+                              <span style={{ color: 'var(--muted)' }}>{attr.label}</span>
+                              <span className={`font-bold px-2 py-1 rounded text-white text-sm ${attr.value >= 85 ? 'bg-green-500' :
+                                attr.value >= 75 ? 'bg-blue-500' :
+                                  attr.value >= 65 ? 'bg-yellow-500' :
+                                    attr.value >= 55 ? 'bg-orange-500' : 'bg-red-500'
+                                }`}>
+                                {attr.value}
+                              </span>
+                            </div>
+                            <div className="w-full rounded-full h-2" style={{ backgroundColor: 'var(--purple-accent)' }}>
+                              <div
+                                className={`h-2 rounded-full transition-all duration-1000 ${attr.value >= 85 ? 'bg-green-500' :
+                                  attr.value >= 75 ? 'bg-blue-500' :
+                                    attr.value >= 65 ? 'bg-yellow-500' :
+                                      attr.value >= 55 ? 'bg-orange-500' : 'bg-red-500'
+                                  }`}
+                                style={{ width: `${attr.value}%` }}
+                              ></div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-bold gradient-text flex items-center">
+                      <Heart className="w-5 h-5 mr-2" />
+                      Mental
+                    </h3>
+                    {player.attributes && (
+                      <div className="space-y-3">
+                        {[
+                          { label: 'Positioning', value: player.attributes.positioning },
+                          { label: 'Vision', value: player.attributes.vision },
+                          { label: 'Composure', value: player.attributes.composure },
+                          { label: 'Reactions', value: player.attributes.reactions },
+                          { label: 'Work Rate', value: player.attributes.workRate },
+                        ].map((attr, index) => (
+                          <div key={index} className="p-3 rounded-lg" style={{ backgroundColor: 'var(--background)' }}>
+                            <div className="flex justify-between items-center mb-2">
+                              <span style={{ color: 'var(--muted)' }}>{attr.label}</span>
+                              <span className={`font-bold px-2 py-1 rounded text-white text-sm ${attr.value >= 85 ? 'bg-green-500' :
+                                attr.value >= 75 ? 'bg-blue-500' :
+                                  attr.value >= 65 ? 'bg-yellow-500' :
+                                    attr.value >= 55 ? 'bg-orange-500' : 'bg-red-500'
+                                }`}>
+                                {attr.value}
+                              </span>
+                            </div>
+                            <div className="w-full rounded-full h-2" style={{ backgroundColor: 'var(--purple-accent)' }}>
+                              <div
+                                className={`h-2 rounded-full transition-all duration-1000 ${attr.value >= 85 ? 'bg-green-500' :
+                                  attr.value >= 75 ? 'bg-blue-500' :
+                                    attr.value >= 65 ? 'bg-yellow-500' :
+                                      attr.value >= 55 ? 'bg-orange-500' : 'bg-red-500'
+                                  }`}
+                                style={{ width: `${attr.value}%` }}
+                              ></div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Goalkeeping Attributes (only for GK) */}
+                  {player.position === 'Goalkeeper' && player.attributes.gkDiving && (
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-bold gradient-text flex items-center">
+                        <Shield className="w-5 h-5 mr-2" />
+                        Goalkeeping
+                      </h3>
+                      <div className="space-y-3">
+                        {[
+                          { label: 'GK Diving', value: player.attributes.gkDiving },
+                          { label: 'GK Handling', value: player.attributes.gkHandling || 0 },
+                          { label: 'GK Kicking', value: player.attributes.gkKicking || 0 },
+                          { label: 'GK Positioning', value: player.attributes.gkPositioning || 0 },
+                          { label: 'GK Reflexes', value: player.attributes.gkReflexes || 0 },
+                        ].map((attr, index) => (
+                          <div key={index} className="p-3 rounded-lg" style={{ backgroundColor: 'var(--background)' }}>
+                            <div className="flex justify-between items-center mb-2">
+                              <span style={{ color: 'var(--muted)' }}>{attr.label}</span>
+                              <span className={`font-bold px-2 py-1 rounded text-white text-sm ${attr.value >= 85 ? 'bg-green-500' :
+                                attr.value >= 75 ? 'bg-blue-500' :
+                                  attr.value >= 65 ? 'bg-yellow-500' :
+                                    attr.value >= 55 ? 'bg-orange-500' : 'bg-red-500'
+                                }`}>
+                                {attr.value}
+                              </span>
+                            </div>
+                            <div className="w-full rounded-full h-2" style={{ backgroundColor: 'var(--purple-accent)' }}>
+                              <div
+                                className={`h-2 rounded-full transition-all duration-1000 ${attr.value >= 85 ? 'bg-green-500' :
+                                  attr.value >= 75 ? 'bg-blue-500' :
+                                    attr.value >= 65 ? 'bg-yellow-500' :
+                                      attr.value >= 55 ? 'bg-orange-500' : 'bg-red-500'
+                                  }`}
+                                style={{ width: `${attr.value}%` }}
+                              ></div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Attribute Comparison Radar Chart Placeholder */}
+                <div className="p-8 rounded-2xl text-center" style={{ backgroundColor: 'var(--purple-light)', borderColor: 'var(--purple-accent)' }}>
+                  <div className="space-y-8">
+                    {/* Header */}
+                    <div className="text-center">
+                      <h2 className="text-2xl font-bold mb-4 gradient-text">Advanced Analytics</h2>
+                      <p style={{ color: 'var(--muted)' }}>
+                        Visual analysis of player performance, position effectiveness, and attribute comparisons
+                      </p>
+                    </div>
+
+                    {/* Radar Charts */}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                      {player.attributes && (
+                        <>
+                          <RadarChart
+                            title="Physical & Mental Attributes"
+                            attributes={[
+                              { name: 'Pace', value: player.attributes.pace },
+                              { name: 'Stamina', value: player.attributes.stamina },
+                              { name: 'Strength', value: player.attributes.strength },
+                              { name: 'Vision', value: player.attributes.vision },
+                              { name: 'Composure', value: player.attributes.composure },
+                              { name: 'Work Rate', value: player.attributes.workRate },
+                            ]}
+                          />
+
+                          {player.position !== 'Goalkeeper' ? (
+                            <RadarChart
+                              title="Technical & Tactical Attributes"
+                              attributes={[
+                                { name: 'Shooting', value: player.attributes.shooting },
+                                { name: 'Passing', value: player.attributes.passing },
+                                { name: 'Defending', value: player.attributes.defending },
+                                { name: 'Positioning', value: player.attributes.positioning },
+                                { name: 'Finishing', value: player.attributes.finishing },
+                                { name: 'Crossing', value: player.attributes.crossing },
+                              ]}
+                            />
+                          ) : (
+                            <RadarChart
+                              title="Goalkeeping Attributes"
+                              attributes={[
+                                { name: 'Diving', value: player.attributes.gkDiving || 0 },
+                                { name: 'Handling', value: player.attributes.gkHandling || 0 },
+                                { name: 'Kicking', value: player.attributes.gkKicking || 0 },
+                                { name: 'Positioning', value: player.attributes.gkPositioning || 0 },
+                                { name: 'Reflexes', value: player.attributes.gkReflexes || 0 },
+                                { name: 'Composure', value: player.attributes.composure },
+                              ]}
+                            />
+                          )}
+                        </>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -373,7 +828,7 @@ export default function PlayerDetail() {
                     <div className="text-2xl mb-6" style={{ color: 'var(--muted)' }}>AI Overall Score</div>
                     <div className="max-w-2xl mx-auto">
                       <div className="w-full rounded-full h-4" style={{ backgroundColor: 'var(--purple-accent)' }}>
-                        <div 
+                        <div
                           className="bg-purple-gradient h-4 rounded-full transition-all duration-1000"
                           style={{ width: `${player.aiAnalysis.overallScore}%` }}
                         ></div>

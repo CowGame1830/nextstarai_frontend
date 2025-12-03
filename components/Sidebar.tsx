@@ -14,7 +14,8 @@ import {
   Calendar,
   FileText,
   HelpCircle,
-  Heart
+  Heart,
+  Activity
 } from 'lucide-react';
 
 interface SidebarProps {

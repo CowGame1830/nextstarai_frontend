@@ -27,27 +27,20 @@ export default function Header({ onSidebarToggle }: HeaderProps) {
   // Mock teams data (matches the one in teams page)
   const teams = [
     { id: "1", name: "Liverpool", league: "Premier League", country: "England", logo: "/api/placeholder/120/120" },
-    { id: "2", name: "Manchester City", league: "Premier League", country: "England", logo: "/api/placeholder/120/120" },
-    { id: "3", name: "Arsenal", league: "Premier League", country: "England", logo: "/api/placeholder/120/120" },
-    { id: "4", name: "Chelsea", league: "Premier League", country: "England", logo: "/api/placeholder/120/120" },
-    { id: "5", name: "Manchester United", league: "Premier League", country: "England", logo: "/api/placeholder/120/120" },
-    { id: "6", name: "Barcelona", league: "La Liga", country: "Spain", logo: "/api/placeholder/120/120" },
-    { id: "7", name: "Real Madrid", league: "La Liga", country: "Spain", logo: "/api/placeholder/120/120" },
-    { id: "8", name: "Bayern Munich", league: "Bundesliga", country: "Germany", logo: "/api/placeholder/120/120" }
   ];
 
   // Search results logic
   const searchResults = useMemo(() => {
     if (!searchQuery.trim()) return [];
-    
+
     const results: SearchResult[] = [];
     const query = searchQuery.toLowerCase();
-    
+
     // Search players
     players.forEach(player => {
-      if (player.name.toLowerCase().includes(query) || 
-          player.position.toLowerCase().includes(query) ||
-          player.team.toLowerCase().includes(query)) {
+      if (player.name.toLowerCase().includes(query) ||
+        player.position.toLowerCase().includes(query) ||
+        player.team.toLowerCase().includes(query)) {
         results.push({
           id: player.id,
           name: player.name,
@@ -58,12 +51,12 @@ export default function Header({ onSidebarToggle }: HeaderProps) {
         });
       }
     });
-    
+
     // Search teams
     teams.forEach(team => {
       if (team.name.toLowerCase().includes(query) ||
-          team.league.toLowerCase().includes(query) ||
-          team.country.toLowerCase().includes(query)) {
+        team.league.toLowerCase().includes(query) ||
+        team.country.toLowerCase().includes(query)) {
         results.push({
           id: team.id,
           name: team.name,
@@ -74,7 +67,7 @@ export default function Header({ onSidebarToggle }: HeaderProps) {
         });
       }
     });
-    
+
     // Limit results to 6
     return results.slice(0, 20);
   }, [searchQuery]);
@@ -100,10 +93,10 @@ export default function Header({ onSidebarToggle }: HeaderProps) {
             <Link href="/" className="flex items-center space-x-4 group transition-all duration-300 hover:scale-105 relative">
               {/* Animated background glow */}
               <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 via-blue-500/10 to-purple-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-pulse"></div>
-              
+
               {/* Enhanced NextStarAI text */}
               <div className="relative flex flex-col">
-                <span 
+                <span
                   className="text-2xl font-black relative z-10 group-hover:scale-110 transition-all duration-300"
                   style={{
                     background: 'linear-gradient(135deg, #8b5cf6 0%, #3b82f6 25%, #06b6d4 50%, #8b5cf6 75%, #a855f7 100%)',
@@ -120,10 +113,10 @@ export default function Header({ onSidebarToggle }: HeaderProps) {
                 <span className="text-xs font-medium opacity-60 group-hover:opacity-100 transition-opacity duration-300" style={{ color: 'var(--purple-primary)' }}>
                   AI Football Analytics
                 </span>
-                
+
                 {/* Decorative underline */}
                 <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-500 to-blue-500 group-hover:w-full transition-all duration-500 rounded-full"></div>
-                
+
                 {/* Sparkle effects */}
                 <div className="absolute -top-1 -right-1 w-2 h-2 bg-yellow-400 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-ping"></div>
                 <div className="absolute top-1 -left-1 w-1.5 h-1.5 bg-cyan-400 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-pulse"></div>
@@ -160,13 +153,13 @@ export default function Header({ onSidebarToggle }: HeaderProps) {
                   color: 'var(--foreground)'
                 } as React.CSSProperties}
               />
-              
+
               {/* Search Results Dropdown */}
               {isSearchOpen && (searchQuery.trim() || searchResults.length > 0) && (
-                <div 
+                <div
                   className="absolute top-full left-0 right-0 mt-2 rounded-xl border-2 shadow-2xl z-50 max-h-80 overflow-y-auto"
-                  style={{ 
-                    backgroundColor: 'var(--panel)', 
+                  style={{
+                    backgroundColor: 'var(--panel)',
                     borderColor: 'var(--purple-accent)',
                     boxShadow: '0 20px 25px -5px rgba(139, 92, 246, 0.1), 0 10px 10px -5px rgba(139, 92, 246, 0.04)'
                   }}
@@ -205,7 +198,7 @@ export default function Header({ onSidebarToggle }: HeaderProps) {
                                 className="w-full h-full object-cover"
                               />
                             ) : (
-                              <div 
+                              <div
                                 className="w-full h-full flex items-center justify-center"
                                 style={{ backgroundColor: 'var(--purple-accent)' }}
                               >
@@ -226,9 +219,9 @@ export default function Header({ onSidebarToggle }: HeaderProps) {
                             </p>
                           </div>
                           <div className="shrink-0">
-                            <span 
+                            <span
                               className="text-xs px-2 py-1 rounded-full font-medium"
-                              style={{ 
+                              style={{
                                 backgroundColor: result.type === 'player' ? 'var(--purple-light)' : 'var(--blue-light)',
                                 color: result.type === 'player' ? 'var(--purple-primary)' : 'var(--blue-primary)'
                               }}

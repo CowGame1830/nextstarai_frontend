@@ -2,6 +2,8 @@
 
 import { Filter, SortAsc, Grid, List } from 'lucide-react';
 import { useState } from 'react';
+import { useThemeLang } from './Providers';
+import { translations } from '@/lib/translations';
 
 interface FilterBarProps {
   onPositionFilter: (position: string) => void;
@@ -13,22 +15,24 @@ interface FilterBarProps {
 export default function FilterBar({ onPositionFilter, onSortChange, onViewChange, currentView }: FilterBarProps) {
   const [selectedPosition, setSelectedPosition] = useState('all');
   const [selectedSort, setSelectedSort] = useState('rating');
+  const { lang } = useThemeLang();
+  const t = translations[lang];
 
   const positions = [
-    { value: 'all', label: 'All Positions' },
-    { value: 'Goalkeeper', label: 'Goalkeeper' },
-    { value: 'Defender', label: 'Defender' },
-    { value: 'Midfielder', label: 'Midfielder' },
-    { value: 'Forward', label: 'Forward' },
+    { value: 'all', label: t.allPositions },
+    { value: 'Goalkeeper', label: t.goalkeeper },
+    { value: 'Defender', label: t.defender },
+    { value: 'Midfielder', label: t.midfielder },
+    { value: 'Forward', label: t.forward },
   ];
 
   const sortOptions = [
-    { value: 'rating', label: 'Rating' },
-    { value: 'aiScore', label: 'AI Score' },
-    { value: 'marketValue', label: 'Market Value' },
-    { value: 'age', label: 'Age' },
-    { value: 'goals', label: 'Goals' },
-    { value: 'assists', label: 'Assists' },
+    { value: 'rating', label: t.rating },
+    { value: 'aiScore', label: t.aiScore },
+    { value: 'marketValue', label: t.marketValue },
+    { value: 'age', label: t.age },
+    { value: 'goals', label: t.goals },
+    { value: 'assists', label: t.assists },
   ];
 
   const handlePositionChange = (position: string) => {

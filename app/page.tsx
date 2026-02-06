@@ -9,12 +9,16 @@ import { Player } from '@/types/player';
 import { TrendingUp, Users, Target, Award, Shield, Zap, Heart } from 'lucide-react';
 import Link from 'next/link';
 import { useFavorites } from '@/hooks/useFavorites';
+import { useThemeLang } from '@/components/Providers';
+import { translations } from '@/lib/translations';
 
 export default function Home() {
   const [positionFilter, setPositionFilter] = useState('all');
   const [sortBy, setSortBy] = useState('rating');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const { favorites, isLoaded, toggleFavorite, isFavorite, getFavoriteCount } = useFavorites();
+  const { lang } = useThemeLang();
+  const t = translations[lang];
 
   // Filter and sort players
   const filteredAndSortedPlayers = useMemo(() => {
@@ -60,10 +64,10 @@ export default function Home() {
         {/* Dashboard Header */}
         <div className="mb-12 text-center animate-fade-in">
           <h1 className="text-4xl md:text-5xl font-bold mb-4 gradient-text">
-            Liverpool FC Dashboard
+            {t.liverPoolDashboard}
           </h1>
           <p className="text-xl max-w-2xl mx-auto" style={{ color: 'var(--muted)' }}>
-            AI-powered analytics and insights for Liverpool Football Club
+            {t.aiPoweredAnalytics}
           </p>
           <div className="mt-6 flex justify-center">
             <div className="w-24 h-1 bg-purple-gradient rounded-full"></div>
@@ -76,7 +80,7 @@ export default function Home() {
             <div className="absolute top-0 right-0 w-20 h-20 bg-purple-gradient opacity-10 rounded-full -mr-10 -mt-10"></div>
             <div className="flex items-center justify-between relative z-10">
               <div>
-                <p className="text-sm font-medium mb-2" style={{ color: 'var(--muted)' }}>Total Players</p>
+                <p className="text-sm font-medium mb-2" style={{ color: 'var(--muted)' }}>{t.totalPlayers}</p>
                 <p className="text-3xl font-bold" style={{ color: 'var(--foreground)' }}>{totalPlayers}</p>
                 <div className="flex items-center mt-2">
                   <div className="w-2 h-2 bg-green-400 rounded-full mr-2"></div>
@@ -93,7 +97,7 @@ export default function Home() {
             <div className="absolute top-0 right-0 w-20 h-20 bg-purple-gradient opacity-10 rounded-full -mr-10 -mt-10"></div>
             <div className="flex items-center justify-between relative z-10">
               <div>
-                <p className="text-sm font-medium mb-2" style={{ color: 'var(--muted)' }}>Avg Rating</p>
+                <p className="text-sm font-medium mb-2" style={{ color: 'var(--muted)' }}>{t.avgRating}</p>
                 <p className="text-3xl font-bold" style={{ color: 'var(--foreground)' }}>{avgRating}</p>
                 <div className="flex items-center mt-2">
                   <div className="w-2 h-2 bg-blue-400 rounded-full mr-2"></div>
@@ -110,7 +114,7 @@ export default function Home() {
             <div className="absolute top-0 right-0 w-20 h-20 bg-purple-gradient opacity-10 rounded-full -mr-10 -mt-10"></div>
             <div className="flex items-center justify-between relative z-10">
               <div>
-                <p className="text-sm font-medium mb-2" style={{ color: 'var(--muted)' }}>Avg AI Score</p>
+                <p className="text-sm font-medium mb-2" style={{ color: 'var(--muted)' }}>{t.avgAIScore}</p>
                 <p className="text-3xl font-bold" style={{ color: 'var(--foreground)' }}>{avgAIScore}</p>
                 <div className="flex items-center mt-2">
                   <div className="w-2 h-2 bg-purple-400 rounded-full mr-2"></div>
@@ -127,7 +131,7 @@ export default function Home() {
             <div className="absolute top-0 right-0 w-20 h-20 bg-purple-gradient opacity-10 rounded-full -mr-10 -mt-10"></div>
             <div className="flex items-center justify-between relative z-10">
               <div>
-                <p className="text-sm font-medium mb-2" style={{ color: 'var(--muted)' }}>Total Value</p>
+                <p className="text-sm font-medium mb-2" style={{ color: 'var(--muted)' }}>{t.totalValue}</p>
                 <p className="text-3xl font-bold" style={{ color: 'var(--foreground)' }}>€{(totalMarketValue / 1000000).toFixed(0)}M</p>
                 <div className="flex items-center mt-2">
                   <div className="w-2 h-2 bg-emerald-400 rounded-full mr-2"></div>
@@ -145,7 +149,7 @@ export default function Home() {
               <div className="absolute top-0 right-0 w-20 h-20 bg-purple-gradient opacity-10 rounded-full -mr-10 -mt-10 group-hover:opacity-20 transition-opacity duration-300"></div>
               <div className="flex items-center justify-between relative z-10">
                 <div>
-                  <p className="text-sm font-medium mb-2 group-hover:text-purple-primary transition-colors duration-300" style={{ color: 'var(--muted)' }}>Favorites</p>
+                  <p className="text-sm font-medium mb-2 group-hover:text-purple-primary transition-colors duration-300" style={{ color: 'var(--muted)' }}>{t.favorites}</p>
                   <p className="text-3xl font-bold group-hover:scale-110 transition-transform duration-300" style={{ color: 'var(--foreground)' }}>{isLoaded ? favoriteCount : '...'}</p>
                   <div className="flex items-center mt-2">
                     <div className="w-2 h-2 bg-red-400 rounded-full mr-2 group-hover:scale-125 transition-transform duration-300"></div>
@@ -205,8 +209,8 @@ export default function Home() {
             <div className="mb-4" style={{ color: 'var(--muted)' }}>
               <Users className="w-16 h-16 mx-auto" />
             </div>
-            <h3 className="text-lg font-medium mb-2" style={{ color: 'var(--foreground)' }}>No players found</h3>
-            <p style={{ color: 'var(--muted)' }}>Try adjusting your filters to see more results.</p>
+            <h3 className="text-lg font-medium mb-2" style={{ color: 'var(--foreground)' }}>{t.noPlayersFound}</h3>
+            <p style={{ color: 'var(--muted)' }}>{t.tryAdjustingFilters}</p>
           </div>
         )}
       </main>

@@ -6,9 +6,13 @@ import PlayerCard from '@/components/PlayerCard';
 import { players as mockPlayers } from '@/app/data/players';
 import { useFavorites } from '@/hooks/useFavorites';
 import Link from 'next/link';
+import { useThemeLang } from '@/components/Providers';
+import { translations } from '@/lib/translations';
 
 export default function FavoritesPage() {
     const { favorites, isLoaded, toggleFavorite, isFavorite, getFavoriteCount, clearAllFavorites } = useFavorites();
+    const { lang } = useThemeLang();
+    const t = translations[lang];
 
     const favoritePlayersList = useMemo(() => {
         if (!isLoaded) return [];

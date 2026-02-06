@@ -21,7 +21,7 @@ export function useThemeLang() {
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   const [lang, setLang] = useState<"en" | "th">("en");
-  const [dark, setDark] = useState<boolean>(true);
+  const [dark, setDark] = useState<boolean>(false);
 
   useEffect(() => {
     const storedLang = localStorage.getItem("nsai_lang");

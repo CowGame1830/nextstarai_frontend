@@ -16,7 +16,7 @@ export default function LayoutWrapper({ children }: LayoutWrapperProps) {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div style={{ background: 'var(--background)' }} className="min-h-screen">
       {/* Sidebar */}
       <Sidebar isOpen={isSidebarOpen} onToggle={toggleSidebar} />
       

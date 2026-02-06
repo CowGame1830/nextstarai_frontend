@@ -5,6 +5,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useState, useMemo, useRef, useEffect } from 'react';
 import { players } from '@/app/data/players';
+import { useThemeLang } from './Providers';
+import { translations } from '@/lib/translations';
 
 interface HeaderProps {
   onSidebarToggle: () => void;
@@ -23,6 +25,8 @@ export default function Header({ onSidebarToggle }: HeaderProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
+  const { lang, setLang } = useThemeLang();
+  const t = translations[lang];
 
   // Mock teams data (matches the one in teams page)
   const teams = [
@@ -144,7 +148,7 @@ export default function Header({ onSidebarToggle }: HeaderProps) {
                   e.target.style.borderColor = 'var(--purple-accent)';
                   e.target.style.boxShadow = 'none';
                 }}
-                placeholder="Search players, teams..."
+                placeholder={t.searchPlaceholder}
                 className="w-full pl-10 pr-4 py-2 border border-purple-300 rounded-lg focus:ring-2 outline-none transition-all"
                 style={{
                   '--tw-ring-color': 'var(--purple-primary)',
@@ -168,7 +172,7 @@ export default function Header({ onSidebarToggle }: HeaderProps) {
                     <>
                       <div className="p-3 border-b" style={{ borderColor: 'var(--purple-accent)' }}>
                         <p className="text-sm font-medium" style={{ color: 'var(--muted)' }}>
-                          Found {searchResults.length} result{searchResults.length !== 1 ? 's' : ''}
+                          {t.foundResults} {searchResults.length} {searchResults.length === 1 ? t.result : t.results}
                         </p>
                       </div>
                       {searchResults.map((result) => (
@@ -237,9 +241,9 @@ export default function Header({ onSidebarToggle }: HeaderProps) {
                       <div className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center" style={{ backgroundColor: 'var(--purple-light)' }}>
                         <Search className="w-6 h-6" style={{ color: 'var(--purple-primary)' }} />
                       </div>
-                      <p className="font-medium mb-1" style={{ color: 'var(--foreground)' }}>No results found</p>
+                      <p className="font-medium mb-1" style={{ color: 'var(--foreground)' }}>{t.noResults}</p>
                       <p className="text-sm" style={{ color: 'var(--muted)' }}>
-                        Try searching for player names, teams, or positions
+                        {t.trySearching}
                       </p>
                     </div>
                   ) : null}
@@ -250,6 +254,30 @@ export default function Header({ onSidebarToggle }: HeaderProps) {
 
           {/* Right Actions */}
           <div className="flex items-center space-x-4">
+            {/* Language Switcher */}
+            <div className="flex items-center gap-1 p-2 rounded-lg" style={{ backgroundColor: 'var(--purple-light)' }}>
+              <button
+                onClick={() => setLang('en')}
+                className="px-3 py-2 rounded-md font-medium transition-all duration-200 text-sm"
+                style={{
+                  backgroundColor: lang === 'en' ? 'var(--purple-primary)' : 'transparent',
+                  color: lang === 'en' ? 'white' : 'var(--foreground)'
+                }}
+              >
+                ENG
+              </button>
+              <button
+                onClick={() => setLang('th')}
+                className="px-3 py-2 rounded-md font-medium transition-all duration-200 text-sm"
+                style={{
+                  backgroundColor: lang === 'th' ? 'var(--purple-primary)' : 'transparent',
+                  color: lang === 'th' ? 'white' : 'var(--foreground)'
+                }}
+              >
+                TH
+              </button>
+            </div>
+
             {/* Notifications */}
             <button className="p-3 rounded-xl transition-all duration-200 relative group" style={{ color: 'var(--muted)' }} onMouseEnter={(e) => {
               (e.currentTarget as HTMLElement).style.backgroundColor = 'var(--purple-light)';
@@ -269,7 +297,7 @@ export default function Header({ onSidebarToggle }: HeaderProps) {
               <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: 'var(--purple-accent)' }}>
                 <User className="w-4 h-4" style={{ color: 'var(--purple-primary)' }} />
               </div>
-              <span className="hidden sm:block font-medium">Admin</span>
+              <span className="hidden sm:block font-medium">{t.admin}</span>
             </button>
 
 

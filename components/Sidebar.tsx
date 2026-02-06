@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useThemeLang } from './Providers';
+import { translations } from '@/lib/translations';
 import { 
   Menu, 
   Home, 
@@ -24,11 +26,14 @@ interface SidebarProps {
 }
 
 export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
+  const { lang } = useThemeLang();
+  const t = translations[lang];
+
   const menuItems = [
-    { icon: Home, label: 'Dashboard', href: '/' },
-    { icon: Heart, label: 'Favorites', href: '/favorites' },
-    { icon: Users, label: 'Players', href: '/players' },
-    { icon: Shield, label: 'Teams', href: '/teams' },
+    { icon: Home, labelKey: 'dashboard' as const, href: '/' },
+    { icon: Heart, labelKey: 'favorites' as const, href: '/favorites' },
+    { icon: Users, labelKey: 'players' as const, href: '/players' },
+    { icon: Shield, labelKey: 'teams' as const, href: '/teams' },
   ];
 
   return (
@@ -126,7 +131,7 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
                   <Icon className="w-5 h-5 shrink-0 group-hover:scale-110 transition-transform duration-200" />
                   {isOpen && (
                     <span className="ml-3 font-medium transition-all duration-200 group-hover:font-semibold">
-                      {item.label}
+                      {t[item.labelKey]}
                     </span>
                   )}
                   
@@ -137,7 +142,7 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
                            background: 'linear-gradient(135deg, var(--purple-primary), var(--purple-accent))',
                            borderColor: 'var(--purple-light)'
                          }}>
-                      <span className="font-medium">{item.label}</span>
+                      <span className="font-medium">{t[item.labelKey]}</span>
                       <div className="absolute left-0 top-1/2 transform -translate-x-1 -translate-y-1/2 w-0 h-0 border-t-4 border-b-4 border-r-4 border-transparent" 
                            style={{ borderRightColor: 'var(--purple-primary)' }}></div>
                     </div>

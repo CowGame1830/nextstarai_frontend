@@ -5,6 +5,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Heart } from 'lucide-react';
 import { useState } from 'react';
+import { useThemeLang } from './Providers';
+import { translations } from '@/lib/translations';
 
 interface PlayerCardProps {
   player: Player;
@@ -18,6 +20,8 @@ export default function PlayerCard({ player, isFavorite = false, onToggleFavorit
     e.stopPropagation();
     onToggleFavorite?.(player.id);
   };
+  const { lang } = useThemeLang();
+  const t = translations[lang];
   return (
     <div className="rounded-2xl shadow-lg card-hover overflow-hidden border relative group" style={{ background: 'var(--panel)', borderColor: 'var(--purple-accent)' }}>
       {/* Header with team colors */}
@@ -113,7 +117,7 @@ export default function PlayerCard({ player, isFavorite = false, onToggleFavorit
               </div>
               <div className="flex items-center space-x-1">
                 <span>📅</span>
-                <span className="whitespace-nowrap">{player.age} years</span>
+                <span className="whitespace-nowrap">{player.age} {t.years}</span>
               </div>
             </div>
           </div>
@@ -124,17 +128,17 @@ export default function PlayerCard({ player, isFavorite = false, onToggleFavorit
           <div className="absolute inset-0 bg-purple-gradient opacity-5 rounded-xl"></div>
           <div className="text-center relative z-10 group hover:scale-110 transition-transform duration-200 p-2 rounded-lg border" style={{ borderColor: 'var(--purple-accent)', backgroundColor: 'var(--panel)' }}>
             <div className="text-xl font-bold mb-1" style={{ color: 'var(--foreground)' }}>{player.stats.goals}</div>
-            <div className="text-xs font-medium" style={{ color: 'var(--muted)' }}>Goals</div>
+            <div className="text-xs font-medium" style={{ color: 'var(--muted)' }}>{t.goals}</div>
             <div className="w-full h-1 bg-purple-gradient rounded-full mt-2 opacity-80"></div>
           </div>
           <div className="text-center relative z-10 group hover:scale-110 transition-transform duration-200 p-2 rounded-lg border" style={{ borderColor: 'var(--purple-accent)', backgroundColor: 'var(--panel)' }}>
             <div className="text-xl font-bold mb-1" style={{ color: 'var(--foreground)' }}>{player.stats.assists}</div>
-            <div className="text-xs font-medium" style={{ color: 'var(--muted)' }}>Assists</div>
+            <div className="text-xs font-medium" style={{ color: 'var(--muted)' }}>{t.assists}</div>
             <div className="w-full h-1 bg-purple-gradient rounded-full mt-2 opacity-80"></div>
           </div>
           <div className="text-center relative z-10 group hover:scale-110 transition-transform duration-200 p-2 rounded-lg border" style={{ borderColor: 'var(--purple-accent)', backgroundColor: 'var(--panel)' }}>
             <div className="text-xl font-bold mb-1" style={{ color: 'var(--foreground)' }}>{player.stats.appearances}</div>
-            <div className="text-xs font-medium" style={{ color: 'var(--muted)' }}>Apps</div>
+            <div className="text-xs font-medium" style={{ color: 'var(--muted)' }}>{t.appearances}</div>
             <div className="w-full h-1 bg-purple-gradient rounded-full mt-2 opacity-80"></div>
           </div>
         </div>
@@ -200,7 +204,7 @@ export default function PlayerCard({ player, isFavorite = false, onToggleFavorit
             (e.currentTarget as HTMLElement).style.background = 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 50%, #6d28d9 100%)';
           }}
         >
-          <span>View Profile</span>
+          <span>{t.viewProfile}</span>
         </Link>
       </div>
     </div>

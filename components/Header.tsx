@@ -115,7 +115,7 @@ export default function Header({ onSidebarToggle }: HeaderProps) {
                 </span>
                 {/* Subtitle */}
                 <span className="text-xs font-medium opacity-60 group-hover:opacity-100 transition-opacity duration-300" style={{ color: 'var(--purple-primary)' }}>
-                  AI Football Analytics
+                  {t.aiFootballAnalytics}
                 </span>
 
                 {/* Decorative underline */}
@@ -230,7 +230,7 @@ export default function Header({ onSidebarToggle }: HeaderProps) {
                                 color: result.type === 'player' ? 'var(--purple-primary)' : 'var(--blue-primary)'
                               }}
                             >
-                              {result.type}
+                              {result.type === 'player' ? t.playerType : t.teamType}
                             </span>
                           </div>
                         </Link>

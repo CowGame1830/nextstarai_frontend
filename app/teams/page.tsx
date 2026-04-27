@@ -4,6 +4,8 @@ import { useState, useMemo } from 'react';
 import { Users, Trophy, Star, TrendingUp, MapPin, Calendar } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useThemeLang } from '@/components/Providers';
+import { translations } from '@/lib/translations';
 
 interface Team {
   id: string;
@@ -85,6 +87,8 @@ const mockTeams: Team[] = [
 
 export default function TeamsPage() {
   const [searchQuery, setSearchQuery] = useState('');
+  const { lang } = useThemeLang();
+  const t = translations[lang];
   
   const filteredTeams = useMemo(() => {
     if (!searchQuery) return mockTeams;
@@ -101,10 +105,10 @@ export default function TeamsPage() {
         {/* Page Header */}
         <div className="mb-12 text-center animate-fade-in">
           <h1 className="text-4xl md:text-5xl font-bold mb-4 gradient-text">
-            Liverpool FC
+            {t.teamsPageTitle}
           </h1>
           <p className="text-xl max-w-2xl mx-auto" style={{ color: 'var(--muted)' }}>
-            Explore team chemistry, playing style, and comprehensive analysis
+            {t.teamsPageSubtitle}
           </p>
           <div className="mt-6 flex justify-center">
             <div className="w-24 h-1 bg-purple-gradient rounded-full"></div>
@@ -117,7 +121,7 @@ export default function TeamsPage() {
             <input
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search teams by name, league, or country..."
+              placeholder={t.searchTeamsPlaceholder}
               className="w-full rounded-2xl py-4 px-6 border-2 backdrop-blur-sm focus:ring-2 outline-none transition-all duration-200 shadow-lg hover:shadow-xl"
               style={{ 
                 '--tw-ring-color': 'var(--purple-primary)',
@@ -145,7 +149,7 @@ export default function TeamsPage() {
         {/* Results Count */}
         <div className="mb-8 text-center">
           <p className="text-lg" style={{ color: 'var(--muted)' }}>
-            Found <span className="font-bold text-2xl gradient-text">{filteredTeams.length}</span> teams
+            {t.foundResults} <span className="font-bold text-2xl gradient-text">{filteredTeams.length}</span> {t.teams}
           </p>
         </div>
 
@@ -188,7 +192,7 @@ export default function TeamsPage() {
                     </div>
                     <div className="flex items-center space-x-1 text-sm" style={{ color: 'var(--muted)' }}>
                       <Calendar className="w-4 h-4" />
-                      <span>Founded {team.founded}</span>
+                      <span>{t.founded} {team.founded}</span>
                     </div>
                   </div>
                 </div>
@@ -198,44 +202,44 @@ export default function TeamsPage() {
                   <div className="absolute inset-0 bg-purple-gradient opacity-5 rounded-xl"></div>
                   <div className="text-center relative z-10 p-2 rounded-lg border" style={{ borderColor: 'var(--purple-accent)', backgroundColor: 'var(--panel)' }}>
                     <div className="text-lg font-bold mb-1" style={{ color: 'var(--foreground)' }}>{team.stats.players}</div>
-                    <div className="text-xs font-medium" style={{ color: 'var(--muted)' }}>Players</div>
+                    <div className="text-xs font-medium" style={{ color: 'var(--muted)' }}>{t.players}</div>
                   </div>
                   <div className="text-center relative z-10 p-2 rounded-lg border" style={{ borderColor: 'var(--purple-accent)', backgroundColor: 'var(--panel)' }}>
                     <div className="text-lg font-bold mb-1" style={{ color: 'var(--foreground)' }}>{team.stats.avgRating}</div>
-                    <div className="text-xs font-medium" style={{ color: 'var(--muted)' }}>Avg Rating</div>
+                    <div className="text-xs font-medium" style={{ color: 'var(--muted)' }}>{t.avgRatingShort}</div>
                   </div>
                   <div className="text-center relative z-10 p-2 rounded-lg border" style={{ borderColor: 'var(--purple-accent)', backgroundColor: 'var(--panel)' }}>
                     <div className="text-lg font-bold mb-1" style={{ color: 'var(--foreground)' }}>{team.stats.totalGoals}</div>
-                    <div className="text-xs font-medium" style={{ color: 'var(--muted)' }}>Goals</div>
+                    <div className="text-xs font-medium" style={{ color: 'var(--muted)' }}>{t.goals}</div>
                   </div>
                   <div className="text-center relative z-10 p-2 rounded-lg border" style={{ borderColor: 'var(--purple-accent)', backgroundColor: 'var(--panel)' }}>
                     <div className="text-lg font-bold mb-1" style={{ color: 'var(--foreground)' }}>{team.stats.totalAssists}</div>
-                    <div className="text-xs font-medium" style={{ color: 'var(--muted)' }}>Assists</div>
+                    <div className="text-xs font-medium" style={{ color: 'var(--muted)' }}>{t.assists}</div>
                   </div>
                 </div>
 
                 {/* Performance Record */}
                 <div className="mb-6 p-4 rounded-xl border-2" style={{ backgroundColor: 'var(--background)', borderColor: 'var(--purple-accent)' }}>
-                  <div className="text-sm font-semibold mb-3" style={{ color: 'var(--foreground)' }}>Season Record</div>
+                  <div className="text-sm font-semibold mb-3" style={{ color: 'var(--foreground)' }}>{t.seasonRecord}</div>
                   <div className="grid grid-cols-3 gap-2 text-center">
                     <div>
                       <div className="text-lg font-bold text-green-400">{team.performance.wins}</div>
-                      <div className="text-xs" style={{ color: 'var(--muted)' }}>Wins</div>
+                      <div className="text-xs" style={{ color: 'var(--muted)' }}>{t.wins}</div>
                     </div>
                     <div>
                       <div className="text-lg font-bold text-yellow-400">{team.performance.draws}</div>
-                      <div className="text-xs" style={{ color: 'var(--muted)' }}>Draws</div>
+                      <div className="text-xs" style={{ color: 'var(--muted)' }}>{t.draws}</div>
                     </div>
                     <div>
                       <div className="text-lg font-bold text-red-400">{team.performance.losses}</div>
-                      <div className="text-xs" style={{ color: 'var(--muted)' }}>Losses</div>
+                      <div className="text-xs" style={{ color: 'var(--muted)' }}>{t.losses}</div>
                     </div>
                   </div>
                 </div>
 
                 {/* Market Value */}
                 <div className="flex items-center justify-between mb-4 p-4 rounded-xl border-2" style={{ backgroundColor: 'var(--background)', borderColor: 'var(--purple-accent)' }}>
-                  <span className="text-sm font-semibold" style={{ color: 'var(--foreground)' }}>Market Value</span>
+                  <span className="text-sm font-semibold" style={{ color: 'var(--foreground)' }}>{t.marketValue}</span>
                   <span className="text-xl font-bold px-3 py-1 rounded-lg text-white" style={{ background: 'var(--purple-primary)' }}>
                     €{(team.stats.marketValue / 1000000).toFixed(0)}M
                   </span>
@@ -243,37 +247,37 @@ export default function TeamsPage() {
 
                 {/* Team Chemistry */}
                 <div className="mb-4 p-4 rounded-xl border-2" style={{ backgroundColor: 'var(--background)', borderColor: 'var(--purple-accent)' }}>
-                  <div className="text-sm font-semibold mb-3" style={{ color: 'var(--foreground)' }}>Team Chemistry</div>
+                  <div className="text-sm font-semibold mb-3" style={{ color: 'var(--foreground)' }}>{t.teamChemistry}</div>
                   <div className="grid grid-cols-2 gap-3">
                     <div className="text-center">
                       <div className="text-lg font-bold mb-1" style={{ color: 'var(--foreground)' }}>{team.chemistry.teamCohesion}%</div>
-                      <div className="text-xs" style={{ color: 'var(--muted)' }}>Cohesion</div>
+                      <div className="text-xs" style={{ color: 'var(--muted)' }}>{t.cohesion}</div>
                     </div>
                     <div className="text-center">
                       <div className="text-lg font-bold mb-1" style={{ color: 'var(--foreground)' }}>{team.chemistry.workRate}%</div>
-                      <div className="text-xs" style={{ color: 'var(--muted)' }}>Work Rate</div>
+                      <div className="text-xs" style={{ color: 'var(--muted)' }}>{t.workRate}</div>
                     </div>
                   </div>
                 </div>
 
                 {/* Playing Style */}
                 <div className="mb-6 p-4 rounded-xl border-2" style={{ backgroundColor: 'var(--background)', borderColor: 'var(--purple-accent)' }}>
-                  <div className="text-sm font-semibold mb-3" style={{ color: 'var(--foreground)' }}>Playing Style</div>
+                  <div className="text-sm font-semibold mb-3" style={{ color: 'var(--foreground)' }}>{t.playingStyle}</div>
                   <div className="space-y-2">
                     <div className="flex justify-between items-center">
-                      <span className="text-xs" style={{ color: 'var(--muted)' }}>Formation</span>
+                      <span className="text-xs" style={{ color: 'var(--muted)' }}>{t.formation}</span>
                       <span className="text-sm font-bold px-2 py-1 rounded-lg text-white" style={{ background: 'var(--purple-primary)' }}>
                         {team.playingStyle.formation}
                       </span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-xs" style={{ color: 'var(--muted)' }}>Style</span>
+                      <span className="text-xs" style={{ color: 'var(--muted)' }}>{t.style}</span>
                       <span className="text-xs font-medium px-2 py-1 rounded-lg border" style={{ backgroundColor: 'var(--panel)', borderColor: 'var(--purple-accent)', color: 'var(--purple-primary)' }}>
                         {team.playingStyle.style}
                       </span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-xs" style={{ color: 'var(--muted)' }}>Pressing</span>
+                      <span className="text-xs" style={{ color: 'var(--muted)' }}>{t.pressing}</span>
                       <span className="text-xs font-bold" style={{ color: 'var(--foreground)' }}>
                         {team.playingStyle.pressingIntensity}%
                       </span>
@@ -295,7 +299,7 @@ export default function TeamsPage() {
                     (e.currentTarget as HTMLElement).style.background = 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 50%, #6d28d9 100%)';
                   }}
                 >
-                  <span>View Team Details</span>
+                  <span>{t.viewTeamDetails}</span>
                 </Link>
               </div>
             </div>
@@ -310,9 +314,9 @@ export default function TeamsPage() {
                 <span className="text-4xl">🔍</span>
               </div>
             </div>
-            <h3 className="text-2xl font-bold mb-4 gradient-text">No teams found</h3>
+            <h3 className="text-2xl font-bold mb-4 gradient-text">{t.noTeamsFound}</h3>
             <p className="text-lg max-w-md mx-auto" style={{ color: 'var(--muted)' }}>
-              Try adjusting your search to find the team you're looking for.
+              {t.tryAdjustingTeamSearch}
             </p>
           </div>
         )}

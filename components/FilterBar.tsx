@@ -112,7 +112,7 @@ export default function FilterBar({ onPositionFilter, onSortChange, onViewChange
             >
               {sortOptions.map((option) => (
                 <option key={option.value} value={option.value}>
-                  Sort by {option.label}
+                  {t.sortBy} {option.label}
                 </option>
               ))}
             </select>
@@ -121,7 +121,7 @@ export default function FilterBar({ onPositionFilter, onSortChange, onViewChange
 
         {/* Right side - View Toggle */}
         <div className="flex items-center space-x-2">
-          <span className="text-sm mr-2" style={{ color: 'var(--muted)' }}>View:</span>
+          <span className="text-sm mr-2" style={{ color: 'var(--muted)' }}>{t.view}:</span>
           <div className="flex rounded-lg p-1" style={{ backgroundColor: 'var(--background)' }}>
             <button
               onClick={() => onViewChange('grid')}
@@ -173,12 +173,12 @@ export default function FilterBar({ onPositionFilter, onSortChange, onViewChange
           <div className="rounded-xl border-2 p-4" style={{ backgroundColor: 'var(--background)', borderColor: 'var(--purple-accent)' }}>
             <div className="flex items-center gap-3 mb-3">
               <div className="w-2 h-2 rounded-full" style={{ backgroundColor: 'var(--purple-primary)' }}></div>
-              <span className="text-sm font-semibold" style={{ color: 'var(--foreground)' }}>Active Filters</span>
+              <span className="text-sm font-semibold" style={{ color: 'var(--foreground)' }}>{t.activeFilters}</span>
             </div>
             <div className="flex flex-wrap gap-3">
               {selectedPosition !== 'all' && (
                 <span className="text-sm px-4 py-2 rounded-lg border flex items-center gap-2 font-medium" style={{ backgroundColor: 'var(--panel)', borderColor: 'var(--purple-accent)', color: 'var(--purple-primary)' }}>
-                  <span className="text-xs opacity-75">Position:</span>
+                  <span className="text-xs opacity-75">{t.position}:</span>
                   <span>{positions.find(p => p.value === selectedPosition)?.label}</span>
                   <button 
                     onClick={() => handlePositionChange('all')}
@@ -199,7 +199,7 @@ export default function FilterBar({ onPositionFilter, onSortChange, onViewChange
               )}
               {selectedSort !== 'rating' && (
                 <span className="text-sm px-4 py-2 rounded-lg border flex items-center gap-2 font-medium" style={{ backgroundColor: 'var(--panel)', borderColor: 'var(--purple-accent)', color: 'var(--purple-primary)' }}>
-                  <span className="text-xs opacity-75">Sort:</span>
+                  <span className="text-xs opacity-75">{t.sort}:</span>
                   <span>{sortOptions.find(s => s.value === selectedSort)?.label}</span>
                   <button 
                     onClick={() => handleSortChange('rating')}

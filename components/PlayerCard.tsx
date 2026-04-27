@@ -60,7 +60,7 @@ export default function PlayerCard({ player, isFavorite = false, onToggleFavorit
             (e.currentTarget as HTMLElement).style.boxShadow = '0 8px 25px rgba(139, 92, 246, 0.4)';
           }
         }}
-        title={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+        title={isFavorite ? t.removeFromFavorites : t.addToFavorites}
       >
         <Heart 
           className={`w-5 h-5 transition-all duration-300 ${
@@ -147,7 +147,7 @@ export default function PlayerCard({ player, isFavorite = false, onToggleFavorit
         <div className="mb-6 p-4 rounded-xl border-2" style={{ backgroundColor: 'var(--background)', borderColor: 'var(--purple-accent)' }}>
           <div className="flex items-center justify-between mb-3">
             <span className="text-sm font-semibold flex items-center" style={{ color: 'var(--foreground)' }}>
-              AI Overall Score
+              {t.aiOverallScore}
             </span>
             <span className="text-sm px-3 py-1 rounded-xl font-bold text-white" style={{ background: 'var(--purple-primary)' }}>
               {player.aiAnalysis.overallScore}/100
@@ -168,7 +168,7 @@ export default function PlayerCard({ player, isFavorite = false, onToggleFavorit
 
         {/* Market Value */}
         <div className="flex items-center justify-between mb-4 p-4 rounded-xl border-2" style={{ backgroundColor: 'var(--background)', borderColor: 'var(--purple-accent)' }}>
-          <span className="text-sm font-semibold" style={{ color: 'var(--foreground)' }}>Market Value</span>
+          <span className="text-sm font-semibold" style={{ color: 'var(--foreground)' }}>{t.marketValue}</span>
           <span className="text-sm font-bold px-3 py-1 rounded-lg text-white" style={{ background: 'var(--purple-primary)' }}>
             €{(player.aiAnalysis.marketValue / 1000000).toFixed(1)}M
           </span>
@@ -176,7 +176,7 @@ export default function PlayerCard({ player, isFavorite = false, onToggleFavorit
 
         {/* Strengths Preview */}
         <div className="mb-4 p-4 rounded-xl border-2" style={{ backgroundColor: 'var(--background)', borderColor: 'var(--purple-accent)' }}>
-          <div className="text-sm font-semibold mb-3" style={{ color: 'var(--foreground)' }}>Top Strengths</div>
+          <div className="text-sm font-semibold mb-3" style={{ color: 'var(--foreground)' }}>{t.topStrengths}</div>
           <div className="flex flex-wrap gap-2">
             {player.aiAnalysis.strengths.slice(0, 3).map((strength, index) => (
               <span 

@@ -3,10 +3,14 @@
 import React, { useMemo, useState } from "react";
 import PlayerCard from "../../components/PlayerCard";
 import { players as allPlayers } from "../data/players";
+import { useThemeLang } from '@/components/Providers';
+import { translations } from '@/lib/translations';
 
 export default function PlayersPage() {
   const [q, setQ] = useState("");
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
+  const { lang } = useThemeLang();
+  const t = translations[lang];
 
   const toggleFavorite = (playerId: string) => {
     setFavorites(prevFavorites => {
@@ -46,10 +50,10 @@ export default function PlayersPage() {
         {/* Page Header */}
         <div className="mb-12 text-center animate-fade-in">
           <h1 className="text-4xl md:text-5xl font-bold mb-4 gradient-text">
-            Liverpool Players
+            {t.playersPageTitle}
           </h1>
           <p className="text-xl max-w-2xl mx-auto" style={{ color: 'var(--muted)' }}>
-            Explore detailed profiles and analytics for Liverpool FC squad
+            {t.playersPageSubtitle}
           </p>
           <div className="mt-6 flex justify-center">
             <div className="w-24 h-1 bg-purple-gradient rounded-full"></div>
@@ -62,7 +66,7 @@ export default function PlayersPage() {
             <input
               value={q}
               onChange={(e) => setQ(e.target.value)}
-              placeholder="Search players by name..."
+              placeholder={t.searchPlayersByName}
               className="w-full rounded-2xl py-4 px-6 border-2 backdrop-blur-sm focus:ring-2 outline-none transition-all duration-200 shadow-lg hover:shadow-xl"
               style={{ 
                 '--tw-ring-color': 'var(--purple-primary)',
@@ -90,14 +94,14 @@ export default function PlayersPage() {
         {/* Results Count */}
         <div className="mb-8 text-center">
           <p className="text-lg" style={{ color: 'var(--muted)' }}>
-            Found <span className="font-bold text-2xl gradient-text">{filtered.length}</span> players
+            {t.foundResults} <span className="font-bold text-2xl gradient-text">{filtered.length}</span> {t.players}
             {favorites.size > 0 && (
               <span className="ml-4 px-3 py-1 rounded-full text-sm font-medium border-2" style={{ 
                 backgroundColor: 'var(--panel)', 
                 color: 'var(--purple-primary)', 
                 borderColor: 'var(--purple-primary)' 
               }}>
-                ❤️ {favorites.size} favorite{favorites.size !== 1 ? 's' : ''}
+                ❤️ {favorites.size} {t.favorite}
               </span>
             )}
           </p>
@@ -123,9 +127,9 @@ export default function PlayersPage() {
                 <span className="text-4xl">🔍</span>
               </div>
             </div>
-            <h3 className="text-2xl font-bold mb-4 gradient-text">No players found</h3>
+            <h3 className="text-2xl font-bold mb-4 gradient-text">{t.noPlayersFound}</h3>
             <p className="text-lg max-w-md mx-auto" style={{ color: 'var(--muted)' }}>
-              Try adjusting your search to find the player you're looking for.
+              {t.tryAdjustingSearch}
             </p>
           </div>
         )}

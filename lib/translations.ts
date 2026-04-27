@@ -25,6 +25,14 @@ export const translations = {
     totalValue: "Total Value",
     noPlayersFound: "No players found",
     tryAdjustingFilters: "Try adjusting your filters to see more results.",
+    fromLastMonth: "from last month",
+    playerSaved: "player saved",
+    playersSaved: "players saved",
+    noFavoritesYet: "No favorites yet",
+    squadAnalysis: "Squad Analysis",
+    showing: "Showing",
+    of: "of",
+    liverpoolPlayersLabel: "Liverpool FC players",
     
     // Filter Bar
     allPositions: "All Positions",
@@ -40,6 +48,9 @@ export const translations = {
     goals: "Goals",
     assists: "Assists",
     appearances: "Appearances",
+    sortBy: "Sort by",
+    view: "View",
+    activeFilters: "Active Filters",
     
     // Player Card
     years: "years",
@@ -48,6 +59,11 @@ export const translations = {
     
     // Players Page
     playersTitle: "Players",
+    playersPageTitle: "Liverpool Players",
+    playersPageSubtitle: "Explore detailed profiles and analytics for Liverpool FC squad",
+    searchPlayersByName: "Search players by name...",
+    tryAdjustingSearch: "Try adjusting your search to find the player you're looking for.",
+    favorite: "favorite",
     
     // Teams Page
     teamsTitle: "Teams",
@@ -59,11 +75,34 @@ export const translations = {
     playingStyleLabel: "Playing Style",
     attackingMentality: "Attacking Mentality",
     defensiveApproach: "Defensive Approach",
+    teamsPageTitle: "Liverpool FC",
+    teamsPageSubtitle: "Explore team chemistry, playing style, and comprehensive analysis",
+    searchTeamsPlaceholder: "Search teams by name, league, or country...",
+    noTeamsFound: "No teams found",
+    tryAdjustingTeamSearch: "Try adjusting your search to find the team you're looking for.",
+    seasonRecord: "Season Record",
+    wins: "Wins",
+    draws: "Draws",
+    losses: "Losses",
+    formation: "Formation",
+    style: "Style",
+    pressing: "Pressing",
+    viewTeamDetails: "View Team Details",
     
     // Favorites Page
     favoritesTitle: "Favorites",
+    favoritesPageTitle: "My Favorite Players",
+    favoritesPageSubtitle: "Your personally curated Liverpool FC squad",
+    loadingFavorites: "Loading your favorites...",
+    favoritePlayersLabel: "Favorite Players",
     combinedValue: "Combined Value",
     avgRatingPlayers: "Avg Rating",
+    yourSquad: "Your Squad",
+    showingFavoritePlayers: "Showing {count} favorite players",
+    clearAll: "Clear All",
+    noFavoritePlayersYet: "No favorite players yet",
+    favoritesEmptyMessage: "Start building your dream Liverpool squad by adding players to your favorites!",
+    browsePlayers: "Browse Players",
     
     // Player Detail Page
     playerStats: "Player Stats",
@@ -118,6 +157,13 @@ export const translations = {
     error: "Error",
 
     viewProfile: "View Profile",
+    addToFavorites: "Add to favorites",
+    removeFromFavorites: "Remove from favorites",
+    aiOverallScore: "AI Overall Score",
+    topStrengths: "Top Strengths",
+    aiFootballAnalytics: "AI Football Analytics",
+    playerType: "player",
+    teamType: "team",
   },
   th: {
     // Sidebar
@@ -145,6 +191,14 @@ export const translations = {
     totalValue: "มูลค่ารวม",
     noPlayersFound: "ไม่พบผู้เล่น",
     tryAdjustingFilters: "ลองปรับตัวกรองเพื่อดูผลลัพธ์เพิ่มเติม",
+    fromLastMonth: "จากเดือนที่แล้ว",
+    playerSaved: "ผู้เล่นที่บันทึก",
+    playersSaved: "ผู้เล่นที่บันทึก",
+    noFavoritesYet: "ยังไม่มีรายการโปรด",
+    squadAnalysis: "วิเคราะห์ทีม",
+    showing: "แสดง",
+    of: "จาก",
+    liverpoolPlayersLabel: "ผู้เล่น Liverpool FC",
     
     // Filter Bar
     allPositions: "ตำแหน่งทั้งหมด",
@@ -160,6 +214,9 @@ export const translations = {
     goals: "ประตู",
     assists: "ผ่านบอล",
     appearances: "ลงสนาม",
+    sortBy: "เรียงตาม",
+    view: "มุมมอง",
+    activeFilters: "ตัวกรองที่ใช้งาน",
     
     // Player Card
     years: "ปี",
@@ -168,6 +225,11 @@ export const translations = {
     
     // Players Page
     playersTitle: "ผู้เล่น",
+    playersPageTitle: "Liverpool Players",
+    playersPageSubtitle: "สำรวจโปรไฟล์และสถิติของนักเตะ Liverpool อย่างละเอียด",
+    searchPlayersByName: "ค้นหาผู้เล่นด้วยชื่อ...",
+    tryAdjustingSearch: "ลองปรับคำค้นหาเพื่อหาผู้เล่นที่ต้องการ",
+    favorite: "รายการโปรด",
     
     // Teams Page
     teamsTitle: "ทีม",
@@ -179,11 +241,34 @@ export const translations = {
     playingStyleLabel: "รูปแบบการเล่น",
     attackingMentality: "จิตสำนึกการโจมตี",
     defensiveApproach: "วิธีการป้องกัน",
+    teamsPageTitle: "Liverpool FC",
+    teamsPageSubtitle: "สำรวจเคมีทีม รูปแบบการเล่น และบทวิเคราะห์เชิงลึก",
+    searchTeamsPlaceholder: "ค้นหาทีมตามชื่อ ลีก หรือประเทศ...",
+    noTeamsFound: "ไม่พบทีม",
+    tryAdjustingTeamSearch: "ลองปรับคำค้นหาเพื่อหาทีมที่ต้องการ",
+    seasonRecord: "ผลงานฤดูกาล",
+    wins: "ชนะ",
+    draws: "เสมอ",
+    losses: "แพ้",
+    formation: "แผนการเล่น",
+    style: "สไตล์",
+    pressing: "เพรสซิ่ง",
+    viewTeamDetails: "ดูรายละเอียดทีม",
     
     // Favorites Page
     favoritesTitle: "รายการโปรด",
+    favoritesPageTitle: "ผู้เล่นที่ชื่นชอบ",
+    favoritesPageSubtitle: "ทีม Liverpool ที่คุณคัดสรรเอง",
+    loadingFavorites: "กำลังโหลดรายการโปรดของคุณ...",
+    favoritePlayersLabel: "ผู้เล่นที่ชื่นชอบ",
     combinedValue: "มูลค่ารวม",
     avgRatingPlayers: "คะแนนเฉลี่ย",
+    yourSquad: "ทีมของคุณ",
+    showingFavoritePlayers: "แสดงผู้เล่นโปรด {count} คน",
+    clearAll: "ล้างทั้งหมด",
+    noFavoritePlayersYet: "ยังไม่มีผู้เล่นที่ชื่นชอบ",
+    favoritesEmptyMessage: "เริ่มสร้างทีม Liverpool ในฝันของคุณด้วยการเพิ่มผู้เล่นในรายการโปรด",
+    browsePlayers: "เลือกดูผู้เล่น",
     
     // Player Detail Page
     playerStats: "สถิติผู้เล่น",
@@ -238,6 +323,13 @@ export const translations = {
     error: "ข้อผิดพลาด",
 
     viewProfile: "ดูโปรไฟล์",
+    addToFavorites: "เพิ่มในรายการโปรด",
+    removeFromFavorites: "ลบออกจากรายการโปรด",
+    aiOverallScore: "คะแนน AI โดยรวม",
+    topStrengths: "จุดเด่น",
+    aiFootballAnalytics: "วิเคราะห์ฟุตบอลด้วย AI",
+    playerType: "ผู้เล่น",
+    teamType: "ทีม",
   },
 } as const;
 

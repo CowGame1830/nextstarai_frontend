@@ -84,7 +84,7 @@ export default function Home() {
                 <p className="text-3xl font-bold" style={{ color: 'var(--foreground)' }}>{totalPlayers}</p>
                 <div className="flex items-center mt-2">
                   <div className="w-2 h-2 bg-green-400 rounded-full mr-2"></div>
-                  <span className="text-xs text-green-600 font-medium">+12% from last month</span>
+                  <span className="text-xs text-green-600 font-medium">+12% {t.fromLastMonth}</span>
                 </div>
               </div>
               <div className="p-4 rounded-xl animate-float" style={{ backgroundColor: 'var(--purple-light)' }}>
@@ -101,7 +101,7 @@ export default function Home() {
                 <p className="text-3xl font-bold" style={{ color: 'var(--foreground)' }}>{avgRating}</p>
                 <div className="flex items-center mt-2">
                   <div className="w-2 h-2 bg-blue-400 rounded-full mr-2"></div>
-                  <span className="text-xs text-blue-600 font-medium">+5.2% from last month</span>
+                  <span className="text-xs text-blue-600 font-medium">+5.2% {t.fromLastMonth}</span>
                 </div>
               </div>
               <div className="p-4 rounded-xl animate-float" style={{ backgroundColor: 'var(--purple-light)', animationDelay: '0.5s' }}>
@@ -118,7 +118,7 @@ export default function Home() {
                 <p className="text-3xl font-bold" style={{ color: 'var(--foreground)' }}>{avgAIScore}</p>
                 <div className="flex items-center mt-2">
                   <div className="w-2 h-2 bg-purple-400 rounded-full mr-2"></div>
-                  <span className="text-xs text-purple-600 font-medium">+8.1% from last month</span>
+                  <span className="text-xs text-purple-600 font-medium">+8.1% {t.fromLastMonth}</span>
                 </div>
               </div>
               <div className="p-4 rounded-xl animate-float" style={{ backgroundColor: 'var(--purple-light)', animationDelay: '1s' }}>
@@ -135,7 +135,7 @@ export default function Home() {
                 <p className="text-3xl font-bold" style={{ color: 'var(--foreground)' }}>€{(totalMarketValue / 1000000).toFixed(0)}M</p>
                 <div className="flex items-center mt-2">
                   <div className="w-2 h-2 bg-emerald-400 rounded-full mr-2"></div>
-                  <span className="text-xs text-emerald-600 font-medium">+15.3% from last month</span>
+                  <span className="text-xs text-emerald-600 font-medium">+15.3% {t.fromLastMonth}</span>
                 </div>
               </div>
               <div className="p-4 rounded-xl animate-float" style={{ backgroundColor: 'var(--purple-light)', animationDelay: '1.5s' }}>
@@ -154,7 +154,9 @@ export default function Home() {
                   <div className="flex items-center mt-2">
                     <div className="w-2 h-2 bg-red-400 rounded-full mr-2 group-hover:scale-125 transition-transform duration-300"></div>
                     <span className="text-xs text-red-600 font-medium">
-                      {favoriteCount > 0 ? `${favoriteCount} player${favoriteCount !== 1 ? 's' : ''} saved` : 'No favorites yet'}
+                      {favoriteCount > 0
+                        ? `${favoriteCount} ${favoriteCount !== 1 ? t.playersSaved : t.playerSaved}`
+                        : t.noFavoritesYet}
                     </span>
                   </div>
                 </div>
@@ -176,13 +178,13 @@ export default function Home() {
 
         {/* Squad Analysis Section */}
         <div className="mb-8">
-          <h2 className="text-2xl font-bold gradient-text mb-6">Squad Analysis</h2>
+          <h2 className="text-2xl font-bold gradient-text mb-6">{t.squadAnalysis}</h2>
           
           {/* Results Count */}
           <div className="mb-6 p-4 rounded-xl border-2" style={{ backgroundColor: 'var(--panel)', borderColor: 'var(--purple-accent)' }}>
             <p style={{ color: 'var(--muted)' }}>
-              Showing <span className="font-semibold gradient-text">{filteredAndSortedPlayers.length}</span> of{' '}
-              <span className="font-semibold">{totalPlayers}</span> Liverpool FC players
+              {t.showing} <span className="font-semibold gradient-text">{filteredAndSortedPlayers.length}</span> {t.of}{' '}
+              <span className="font-semibold">{totalPlayers}</span> {t.liverpoolPlayersLabel}
             </p>
           </div>
         </div>

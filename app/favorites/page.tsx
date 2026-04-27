@@ -29,7 +29,7 @@ export default function FavoritesPage() {
             <div className="min-h-screen flex items-center justify-center" style={{ background: 'var(--background)' }}>
                 <div className="text-center">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 mx-auto mb-4" style={{ borderColor: 'var(--purple-primary)' }}></div>
-                    <p style={{ color: 'var(--muted)' }}>Loading your favorites...</p>
+                    <p style={{ color: 'var(--muted)' }}>{t.loadingFavorites}</p>
                 </div>
             </div>
         );
@@ -42,11 +42,11 @@ export default function FavoritesPage() {
                 <div className="mb-12 text-center animate-fade-in">
                     <div className="flex items-center justify-center mb-4">
                         <h1 className="text-4xl md:text-5xl font-bold gradient-text">
-                            My Favorite Players
+                            {t.favoritesPageTitle}
                         </h1>
                     </div>
                     <p className="text-xl max-w-2xl mx-auto" style={{ color: 'var(--muted)' }}>
-                        Your personally curated Liverpool FC squad
+                        {t.favoritesPageSubtitle}
                     </p>
                     <div className="mt-6 flex justify-center">
                         <div className="w-24 h-1 bg-purple-gradient rounded-full"></div>
@@ -63,7 +63,7 @@ export default function FavoritesPage() {
                                     {getFavoriteCount()}
                                 </div>
                                 <div className="text-sm font-medium" style={{ color: 'var(--muted)' }}>
-                                    Favorite Players
+                                    {t.favoritePlayersLabel}
                                 </div>
                             </div>
 
@@ -73,7 +73,7 @@ export default function FavoritesPage() {
                                     €{(totalFavoriteValue / 1000000).toFixed(0)}M
                                 </div>
                                 <div className="text-sm font-medium" style={{ color: 'var(--muted)' }}>
-                                    Combined Value
+                                    {t.combinedValue}
                                 </div>
                             </div>
 
@@ -85,10 +85,10 @@ export default function FavoritesPage() {
                                     }
                                 </div>
                                 <div className="text-3xl font-bold mb-2" style={{ color: 'var(--foreground)' }}>
-                                    Avg Rating
+                                    {t.avgRatingPlayers}
                                 </div>
                                 <div className="text-sm font-medium" style={{ color: 'var(--muted)' }}>
-                                    Your Squad
+                                    {t.yourSquad}
                                 </div>
                             </div>
                         </div>
@@ -96,7 +96,7 @@ export default function FavoritesPage() {
                         {/* Clear All Button */}
                         <div className="mb-8 flex justify-between items-center">
                             <p className="text-lg" style={{ color: 'var(--muted)' }}>
-                                Showing <span className="font-bold gradient-text">{favoritePlayersList.length}</span> favorite players
+                                {t.showing} <span className="font-bold gradient-text">{favoritePlayersList.length}</span> {t.favoritePlayersLabel}
                             </p>
                             <button
                                 onClick={clearAllFavorites}
@@ -118,7 +118,7 @@ export default function FavoritesPage() {
                                 }}
                             >
                                 <Trash2 className="w-4 h-4" />
-                                <span className="font-medium">Clear All</span>
+                                <span className="font-medium">{t.clearAll}</span>
                             </button>
                         </div>
 
@@ -142,9 +142,9 @@ export default function FavoritesPage() {
                                 <Heart className="w-16 h-16 text-gray-400" />
                             </div>
                         </div>
-                        <h3 className="text-2xl font-bold mb-4 gradient-text">No favorite players yet</h3>
+                        <h3 className="text-2xl font-bold mb-4 gradient-text">{t.noFavoritePlayersYet}</h3>
                         <p className="text-lg max-w-md mx-auto mb-8" style={{ color: 'var(--muted)' }}>
-                            Start building your dream Liverpool squad by adding players to your favorites!
+                            {t.favoritesEmptyMessage}
                         </p>
                         <Link
                             href="/"
@@ -155,7 +155,7 @@ export default function FavoritesPage() {
                             }}
                         >
                             <Users className="w-5 h-5" />
-                            <span>Browse Players</span>
+                            <span>{t.browsePlayers}</span>
                         </Link>
                     </div>
                 )}

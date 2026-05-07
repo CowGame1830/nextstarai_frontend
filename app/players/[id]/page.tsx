@@ -2,7 +2,7 @@
 
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
-import { players as mockPlayers } from '@/app/data/players';
+import { useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import {
@@ -27,9 +27,11 @@ import {
 
 // Radar Chart Component
 const RadarChart = ({ attributes, title }: { attributes: Array<{ name: string, value: number }>, title: string }) => {
-  const centerX = 200;
-  const centerY = 200;
-  const maxRadius = 100;
+  const svgWidth = 520;
+  const svgHeight = 460;
+  const centerX = svgWidth / 2;
+  const centerY = svgHeight / 2 + 10;
+  const maxRadius = 110;
   const numSides = attributes.length;
 
   // Generate pentagon/hexagon points
@@ -46,6 +48,7 @@ const RadarChart = ({ attributes, title }: { attributes: Array<{ name: string, v
   // Generate data points
   const dataPoints = attributes.map((attr, index) => {
     const angle = (index * 2 * Math.PI) / numSides - Math.PI / 2;
+     const safeValue = isNaN(attr.value) ? 0 : (attr.value || 0); 
     const radius = (attr.value / 100) * maxRadius;
     return {
       x: centerX + Math.cos(angle) * radius,
@@ -56,7 +59,7 @@ const RadarChart = ({ attributes, title }: { attributes: Array<{ name: string, v
   return (
     <div className="p-6 rounded-2xl border-2" style={{ backgroundColor: 'var(--purple-light)', borderColor: 'var(--purple-accent)' }}>
       <h4 className="text-lg font-bold mb-4 text-center gradient-text">{title}</h4>
-      <svg width="400" height="400" className="mx-auto">
+      <svg viewBox={`0 0 ${svgWidth} ${svgHeight}`} width="100%" height={svgHeight} className="mx-auto block max-w-[520px]">
         {/* Grid lines */}
         {[0.2, 0.4, 0.6, 0.8, 1.0].map((scale, index) => (
           <polygon
@@ -146,11 +149,88 @@ const RadarChart = ({ attributes, title }: { attributes: Array<{ name: string, v
 };
 
 
+
 export default function PlayerDetail() {
   const params = useParams();
   const playerId = params?.id as string;
-  const player = mockPlayers.find(p => p.id === playerId);
+  const [player, setPlayer] = useState<any>(null);
   const [activeTab, setActiveTab] = useState('overview');
+  const [analysis, setAnalysis] = useState<string[]>([]);
+  const [loadingAnalysis, setLoadingAnalysis] = useState(false);
+
+useEffect(() => {
+  const fetchPlayer = async () => {
+    try {
+      const res = await fetch(
+        `/api//merge-data`
+      );
+
+      const data = await res.json();
+
+      const foundPlayer = data.find(
+        (p: any) => p.id.toString() === playerId
+      );
+
+      console.log(JSON.stringify(foundPlayer, null, 2));
+
+      if (!foundPlayer) return;
+
+      setPlayer(foundPlayer);
+
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  fetchPlayer();
+}, [playerId]);
+
+
+  useEffect(() => {
+    if (activeTab === 'ai-analysis' && analysis.length === 0) {
+      generateAIAnalysis();
+    }
+  }, [activeTab]);
+
+  
+  const generateAIAnalysis = async () => {
+    if (!player) return;
+
+    setLoadingAnalysis(true);
+
+    const prompt = `
+      Analyze this football player like a professional scout.
+
+      Pace: ${player.attributes?.pace}
+      Stamina: ${player.attributes?.stamina}
+      Acceleration: ${player.attributes?.acceleration}
+
+      Rules:
+      - Give EXACTLY 4 bullet points
+      - Each point must be concise
+      - No intro, no conclusion
+      `;
+
+    const res = await fetch("/api/gemini", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ prompt }),
+    });
+
+    const data = await res.json();
+
+    const lines = data.text
+      .split("\n")
+      .map((line: string) => line.replace(/^[-•\d.]\s*/, ""))
+      .filter((line: string) => line.trim() !== "")
+      .slice(0, 4);
+
+    setAnalysis(lines);
+    setLoadingAnalysis(false);
+  };
+
 
   if (!player) {
     return (
@@ -182,6 +262,7 @@ export default function PlayerDetail() {
     { id: 'stats', label: 'Statistics', icon: BarChart3 },
     { id: 'attributes', label: 'Attributes', icon: Target },
     { id: 'ai-analysis', label: 'AI Analysis', icon: Zap },
+    { id: 'main-attributes', label: 'Main Attributes', icon: Target },
   ];
 
   return (
@@ -215,13 +296,12 @@ export default function PlayerDetail() {
               {/* Player Photo */}
               <div className="relative -mt-24 mb-6 lg:mb-0 shrink-0">
                 <div className="absolute inset-0 bg-purple-gradient rounded-full opacity-20 animate-pulse"></div>
-                <div className="relative">
+                <div className="relative w-[90px] h-[90px] rounded-full overflow-hidden">
                   <Image
                     src={player.photo}
                     alt={player.name}
-                    width={160}
-                    height={160}
-                    className="rounded-full border-4 object-cover shadow-xl"
+                    fill
+                    className="object-cover shadow-xl group-hover:scale-105 transition-transform duration-300"
                     style={{ borderColor: 'var(--purple-primary)' }}
                   />
                   <div className="absolute inset-0 rounded-full border-2 border-opacity-30" style={{ borderColor: 'var(--purple-accent)' }}></div>
@@ -886,7 +966,7 @@ export default function PlayerDetail() {
                       <h3 className="text-xl font-bold text-green-700">Key Strengths</h3>
                     </div>
                     <div className="space-y-3">
-                      {player.aiAnalysis.strengths.map((strength, index) => (
+                      {player.aiAnalysis?.strengths?.map((strength: string, index: number) => (
                         <div key={index} className="flex items-center space-x-3 p-3 bg-green-50 rounded-lg">
                           <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                           <span className="text-green-800 font-medium">{strength}</span>
@@ -912,32 +992,147 @@ export default function PlayerDetail() {
                   </div>
                 </div>
 
-                {/* AI Recommendations */}
-                <div className="p-8 rounded-2xl border-2" style={{ backgroundColor: 'var(--purple-light)', borderColor: 'var(--purple-accent)' }}>
+                {/* AI Analysis */}
+                <div
+                  className="p-8 rounded-2xl border-2"
+                  style={{
+                    backgroundColor: 'var(--purple-light)',
+                    borderColor: 'var(--purple-accent)',
+                  }}
+                >
                   <div className="flex items-center space-x-3 mb-6">
                     <Award className="w-6 h-6" style={{ color: 'var(--purple-primary)' }} />
-                    <h3 className="text-xl font-bold" style={{ color: 'var(--purple-primary)' }}>AI Recommendations</h3>
+                    <h3
+                      className="text-xl font-bold"
+                      style={{ color: 'var(--purple-primary)' }}
+                    >
+                      AI Analysis
+                    </h3>
                   </div>
+
                   <div className="grid gap-4">
-                    {[
-                      'Focus on improving aerial ability through targeted training sessions',
-                      'Work on long-range passing accuracy with specialized drills',
-                      'Enhance defensive positioning through tactical analysis sessions',
-                      'Maintain current pace and technical skills which are excellent'
-                    ].map((recommendation, index) => (
-                      <div key={index} className="p-4 bg-white/50 rounded-xl border border-white/20">
-                        <div className="flex items-start space-x-3">
-                          <div className="w-6 h-6 rounded-full flex items-center justify-center text-white text-sm font-bold" style={{ backgroundColor: 'var(--purple-primary)' }}>
-                            {index + 1}
+                    {loadingAnalysis ? (
+                      <p>Analyzing player...</p>
+                    ) : analysis.length === 0 ? (
+                      <p>No AI analysis yet</p>
+                    ) : (
+                      analysis.map((recommendation, index) => (
+                        <div
+                          key={index}
+                          className="p-4 bg-white/50 rounded-xl border border-white/20"
+                        >
+                          <div className="flex items-start space-x-3">
+                            <div
+                              className="w-6 h-6 rounded-full flex items-center justify-center text-white text-sm font-bold"
+                              style={{ backgroundColor: 'var(--purple-primary)' }}
+                            >
+                              {index + 1}
+                            </div>
+                            <span style={{ color: 'var(--foreground)' }}>
+                              {recommendation}
+                            </span>
                           </div>
-                          <span style={{ color: 'var(--foreground)' }}>{recommendation}</span>
                         </div>
-                      </div>
-                    ))}
+                      ))
+                    )}
                   </div>
                 </div>
               </div>
             )}
+
+            {activeTab === 'main-attributes' && (
+              <div className="space-y-8">
+                {/* Overall Rating */}
+                <div className="text-center p-8 rounded-2xl border-2" style={{ backgroundColor: 'var(--purple-light)', borderColor: 'var(--purple-accent)' }}>
+                  <div className="text-6xl font-bold mb-4 gradient-text">{player.aiAnalysis.overallScore}</div>
+                  <div className="text-xl mb-4" style={{ color: 'var(--muted)' }}>Overall Rating</div>
+                  <div className="max-w-md mx-auto">
+                    <div className="w-full rounded-full h-3" style={{ backgroundColor: 'var(--purple-accent)' }}>
+                      <div
+                        className="bg-purple-gradient h-3 rounded-full transition-all duration-1000"
+                        style={{ width: `${player.aiAnalysis.overallScore}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Main Attributes */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-bold gradient-text flex items-center">
+                      <Zap className="w-5 h-5 mr-2" />
+                      Physical
+                    </h3>
+                    {player.attributes && (
+                      <div className="space-y-3">
+                        {[
+                          { label: 'Pace', value: player.attributes.pace },
+                          { label: 'Acceleration', value: player.attributes.acceleration },
+                          { label: 'Sprint Speed', value: player.attributes.sprintSpeed },
+                          { label: 'Stamina', value: player.attributes.stamina },
+                          { label: 'Work Rate', value: player.attributes.workRate },
+                          { label: 'Jumping', value: player.attributes.jumping },
+                        ].map((attr, index) => (
+                          <div key={index} className="p-3 rounded-lg" style={{ backgroundColor: 'var(--background)' }}>
+                            <div className="flex justify-between items-center mb-2">
+                              <span style={{ color: 'var(--muted)' }}>{attr.label}</span>
+                              <span className={`font-bold px-2 py-1 rounded text-white text-sm ${attr.value >= 85 ? 'bg-green-500' :
+                                attr.value >= 75 ? 'bg-blue-500' :
+                                  attr.value >= 65 ? 'bg-yellow-500' :
+                                    attr.value >= 55 ? 'bg-orange-500' : 'bg-red-500'
+                                }`}>
+                                {attr.value}
+                              </span>
+                            </div>
+                            <div className="w-full rounded-full h-2" style={{ backgroundColor: 'var(--purple-accent)' }}>
+                              <div
+                                className={`h-2 rounded-full transition-all duration-1000 ${attr.value >= 85 ? 'bg-green-500' :
+                                  attr.value >= 75 ? 'bg-blue-500' :
+                                    attr.value >= 65 ? 'bg-yellow-500' :
+                                      attr.value >= 55 ? 'bg-orange-500' : 'bg-red-500'
+                                  }`}
+                                style={{ width: `${attr.value}%` }}
+                              ></div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Attribute Comparison Radar Chart Placeholder */}
+                <div className="p-8 rounded-2xl text-center" style={{ backgroundColor: 'var(--purple-light)', borderColor: 'var(--purple-accent)' }}>
+                  <div className="space-y-8">
+                    {/* Header */}
+                    <div className="text-center">
+                      <h2 className="text-2xl font-bold mb-4 gradient-text">Advanced Analytics</h2>
+                      <p style={{ color: 'var(--muted)' }}>
+                        Visual analysis of player performance, position effectiveness, and attribute comparisons
+                      </p>
+                    </div>
+
+                    {/* Radar Charts */}
+                    <div className="grid grid-cols-1 lg:grid-cols-1 gap-8">
+                      {player.attributes && (
+
+                        <RadarChart
+                          title="Physical & Mental Attributes"
+                          attributes={[
+                            { name: 'Pace', value: player.attributes.pace },
+                            { name: 'Stamina', value: player.attributes.stamina },
+                            { name: 'Acceleration', value: player.attributes.acceleration },
+                            { name: 'Work Rate', value: player.attributes.workRate },
+                          ]}
+                        />
+
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
           </div>
         </div>
       </main>

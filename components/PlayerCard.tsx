@@ -83,15 +83,14 @@ export default function PlayerCard({ player, isFavorite = false, onToggleFavorit
         <div className="flex items-start space-x-4 mb-6 p-4 rounded-xl border-2" style={{ backgroundColor: 'var(--background)', borderColor: 'var(--purple-accent)' }}>
           <div className="relative shrink-0">
             <div className="absolute inset-0 bg-purple-gradient rounded-full opacity-20 group-hover:opacity-40 transition-opacity duration-300"></div>
-            <div className="relative">
-              <Image
-                src={player.photo}
-                alt={player.name}
-                width={90}
-                height={90}
-                className="rounded-full border-4 object-cover shadow-xl group-hover:scale-105 transition-transform duration-300"
-                style={{ borderColor: 'var(--purple-primary)' }}
-              />
+            <div className="relative w-[90px] h-[90px] rounded-full overflow-hidden">
+            <Image
+              src={player.photo}
+              alt={player.name}
+              fill
+              className="object-cover shadow-xl group-hover:scale-105 transition-transform duration-300"
+              style={{ borderColor: 'var(--purple-primary)' }}
+            />
               <div className="absolute inset-0 rounded-full border-2 border-opacity-30" style={{ borderColor: 'var(--purple-accent)' }}></div>
             </div>
             <div className="absolute -bottom-2 -right-2 text-white text-sm font-bold rounded-full w-10 h-10 flex items-center justify-center shadow-xl border-2" style={{ backgroundColor: 'var(--purple-primary)', borderColor: 'white' }}>

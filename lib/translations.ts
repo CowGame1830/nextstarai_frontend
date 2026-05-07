@@ -17,8 +17,8 @@ export const translations = {
     trySearching: "Try searching for player names, teams, or positions",
     
     // Home Page
-    liverPoolDashboard: "Liverpool FC Dashboard",
-    aiPoweredAnalytics: "AI-powered analytics and insights for Liverpool Football Club",
+    liverPoolDashboard: "Dashboard",
+    aiPoweredAnalytics: "AI-powered analytics and insights for Football Club",
     totalPlayers: "Total Players",
     avgRating: "Avg Rating",
     avgAIScore: "Avg AI Score",
@@ -32,7 +32,7 @@ export const translations = {
     squadAnalysis: "Squad Analysis",
     showing: "Showing",
     of: "of",
-    liverpoolPlayersLabel: "Liverpool FC players",
+    liverpoolPlayersLabel: "players",
     
     // Filter Bar
     allPositions: "All Positions",

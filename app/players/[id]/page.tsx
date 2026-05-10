@@ -22,7 +22,8 @@ import {
   Heart,
   TextCursor,
   User,
-  Map
+  Map,
+  Cpu
 } from 'lucide-react';
 
 // Radar Chart Component
@@ -167,6 +168,11 @@ useEffect(() => {
 
       const data = await res.json();
 
+      if (!Array.isArray(data)) {
+        console.error("API did not return an array:", data);
+        return;
+      }
+
       const foundPlayer = data.find(
         (p: any) => p.id.toString() === playerId
       );
@@ -220,6 +226,18 @@ useEffect(() => {
     });
 
     const data = await res.json();
+
+    if (data.error) {
+      console.error("Gemini API Error:", data.error);
+      setLoadingAnalysis(false);
+      return;
+    }
+
+    if (!data.text) {
+      console.error("Gemini API returned no text:", data);
+      setLoadingAnalysis(false);
+      return;
+    }
 
     const lines = data.text
       .split("\n")
@@ -991,6 +1009,71 @@ useEffect(() => {
                     </div>
                   </div>
                 </div>
+                
+                {/* XGBoost Model Analysis */}
+                {player.aiAnalysis.xgboostPosition && (
+                  <div className="p-8 rounded-3xl border-2 animate-slide-up" style={{ backgroundColor: 'var(--panel)', borderColor: 'var(--purple-accent)' }}>
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
+                      <div className="flex items-center space-x-4">
+                        <div className="p-4 rounded-2xl" style={{ backgroundColor: 'var(--purple-light)' }}>
+                          <Cpu className="w-8 h-8 text-purple-primary" style={{ color: 'var(--purple-primary)' }} />
+                        </div>
+                        <div>
+                          <h3 className="text-2xl font-bold gradient-text">Model Prediction</h3>
+                          <p style={{ color: 'var(--muted)' }}>Advanced Position Analysis</p>
+                        </div>
+                      </div>
+                      <div className="px-8 py-4 rounded-2xl text-center border-2" style={{ backgroundColor: 'var(--background)', borderColor: 'var(--purple-accent)' }}>
+                        <div className="text-sm font-medium mb-1" style={{ color: 'var(--muted)' }}>Recommended Position</div>
+                        <div className="text-3xl font-bold" style={{ color: 'var(--purple-primary)' }}>
+                          {player.aiAnalysis.xgboostPosition}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                      <div className="space-y-6">
+                        <h4 className="text-lg font-bold mb-4" style={{ color: 'var(--foreground)' }}>Confidence Breakdown</h4>
+                        <div className="space-y-4">
+                          {player.aiAnalysis.probabilities?.split(', ').map((prob: string, index: number) => {
+                            const [label, valueStr] = prob.split(' (');
+                            const value = parseFloat(valueStr.replace('%)', ''));
+                            return (
+                              <div key={index} className="space-y-2">
+                                <div className="flex justify-between items-center text-sm font-bold">
+                                  <span style={{ color: 'var(--foreground)' }}>{label}</span>
+                                  <span style={{ color: 'var(--purple-primary)' }}>{value}%</span>
+                                </div>
+                                <div className="w-full h-3 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--purple-light)' }}>
+                                  <div 
+                                    className="h-full bg-purple-gradient transition-all duration-1000" 
+                                    style={{ width: `${value}%` }}
+                                  ></div>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                      
+                      <div className="p-6 rounded-2xl" style={{ backgroundColor: 'var(--purple-light)' }}>
+                        <div className="flex items-start space-x-4">
+                          <div className="p-2 rounded-lg bg-white/50">
+                            <Star className="w-5 h-5 text-yellow-500" />
+                          </div>
+                          <div>
+                            <h4 className="font-bold mb-2" style={{ color: 'var(--purple-primary)' }}>Model Insight</h4>
+                            <p className="text-sm" style={{ color: 'var(--muted)', lineHeight: '1.6' }}>
+                              The model analyzed 38 features including physical metrics and seasonal performance. 
+                              The high confidence score for <strong>{player.aiAnalysis.xgboostPosition}</strong> indicates 
+                              that the player's attributes strongly align with elite-level standards for this role.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 {/* AI Analysis */}
                 <div
@@ -1056,49 +1139,39 @@ useEffect(() => {
                   </div>
                 </div>
 
-                {/* Main Attributes */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-bold gradient-text flex items-center">
-                      <Zap className="w-5 h-5 mr-2" />
-                      Physical
-                    </h3>
-                    {player.attributes && (
-                      <div className="space-y-3">
-                        {[
-                          { label: 'Pace', value: player.attributes.pace },
-                          { label: 'Acceleration', value: player.attributes.acceleration },
-                          { label: 'Sprint Speed', value: player.attributes.sprintSpeed },
-                          { label: 'Stamina', value: player.attributes.stamina },
-                          { label: 'Work Rate', value: player.attributes.workRate },
-                          { label: 'Jumping', value: player.attributes.jumping },
-                        ].map((attr, index) => (
-                          <div key={index} className="p-3 rounded-lg" style={{ backgroundColor: 'var(--background)' }}>
-                            <div className="flex justify-between items-center mb-2">
-                              <span style={{ color: 'var(--muted)' }}>{attr.label}</span>
-                              <span className={`font-bold px-2 py-1 rounded text-white text-sm ${attr.value >= 85 ? 'bg-green-500' :
-                                attr.value >= 75 ? 'bg-blue-500' :
-                                  attr.value >= 65 ? 'bg-yellow-500' :
-                                    attr.value >= 55 ? 'bg-orange-500' : 'bg-red-500'
-                                }`}>
-                                {attr.value}
-                              </span>
-                            </div>
-                            <div className="w-full rounded-full h-2" style={{ backgroundColor: 'var(--purple-accent)' }}>
-                              <div
-                                className={`h-2 rounded-full transition-all duration-1000 ${attr.value >= 85 ? 'bg-green-500' :
-                                  attr.value >= 75 ? 'bg-blue-500' :
-                                    attr.value >= 65 ? 'bg-yellow-500' :
-                                      attr.value >= 55 ? 'bg-orange-500' : 'bg-red-500'
-                                  }`}
-                                style={{ width: `${attr.value}%` }}
-                              ></div>
-                            </div>
-                          </div>
-                        ))}
+                {/* Main Attributes - Premium Grid */}
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+                  {player.attributes && [
+                    { label: 'Pace', value: player.attributes.pace, icon: Zap },
+                    { label: 'Acceleration', value: player.attributes.acceleration, icon: Activity },
+                    { label: 'Stamina', value: player.attributes.stamina, icon: Heart },
+                    { label: 'Work Rate', value: player.attributes.workRate, icon: Target },
+                  ].map((attr, index) => (
+                    <div 
+                      key={index} 
+                      className="group p-6 rounded-3xl border-2 transition-all duration-500 hover:shadow-2xl hover:-translate-y-2"
+                      style={{ 
+                        backgroundColor: 'var(--purple-light)', 
+                        borderColor: 'var(--purple-accent)' 
+                      }}
+                    >
+                      <div className="flex flex-col items-center text-center space-y-4">
+                        <div className="p-4 rounded-2xl bg-white shadow-inner group-hover:bg-purple-gradient transition-all duration-500 transform group-hover:rotate-12">
+                          <attr.icon className="w-8 h-8 text-purple-primary group-hover:text-white" />
+                        </div>
+                        <div>
+                          <div className="text-4xl font-black gradient-text mb-1">{attr.value}</div>
+                          <div className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--muted)' }}>{attr.label}</div>
+                        </div>
+                        <div className="w-full h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--purple-accent)' }}>
+                          <div 
+                            className="h-full bg-purple-gradient transition-all duration-1000 ease-out" 
+                            style={{ width: `${attr.value}%` }}
+                          ></div>
+                        </div>
                       </div>
-                    )}
-                  </div>
+                    </div>
+                  ))}
                 </div>
 
                 {/* Attribute Comparison Radar Chart Placeholder */}

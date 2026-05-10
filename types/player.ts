@@ -64,6 +64,8 @@ export interface AIAnalysis {
   overallScore: number;
   strengths: string[];
   marketValue: number;
+  xgboostPosition?: string;
+  probabilities?: string;
 }
 
 export interface Player {

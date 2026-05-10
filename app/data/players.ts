@@ -76,11 +76,11 @@ const generateAttributes = (position: string, overallRating: number): PlayerAttr
 
 export const players: Player[] = [
  {
-    id: "1",
+    id: "3",
     name: "Adam Wharton",
     team: "Crystal Palace",
     position: "Midfield",
-    age: 22,
+    age: 20,
     nationality: "England",
     photo: "/images/Adam2.jpg",
     height: 183, // 6'4"
@@ -146,12 +146,12 @@ export const players: Player[] = [
       gkReflexes: 89,
     },
     aiAnalysis: {
-      overallScore: 80,
+      overallScore: 70,
       strengths: ["Shot Stopping", "Distribution", "Positioning"],
-      marketValue: 35000000,
+      marketValue: 32000000,
     },
   },{
-    id: "2",
+    id: "1",
     name: "Maxence Lacroix",
     team: "Crystal Palace",
     position: "Defender",
@@ -165,7 +165,7 @@ export const players: Player[] = [
       goals: 1,
       assists: 1,
       minutesPlayed: 3116,
-      rating: 6.7,
+      rating: 7.1,
     },
     attributes: {
         // Physical
@@ -221,17 +221,17 @@ export const players: Player[] = [
         gkReflexes: 10,
       },
     aiAnalysis: {
-      overallScore: 81,
+      overallScore: 69,
       strengths: [
     "Recovery",
     "Interceptions",
     "Progression"
   ],
-      marketValue: 32000000,
+      marketValue: 20000000,
     },
   },
   {
-    id: "3",
+    id: "2",
     name: "Philippe Matetar",
     team: "Crystal Palace",
     position: "Forward",
@@ -245,7 +245,7 @@ export const players: Player[] = [
       goals: 14,
       assists: 2,
       minutesPlayed: 2648,
-      rating: 7.1,
+      rating: 7.6,
     },
     attributes: {
       // Physical
@@ -301,9 +301,9 @@ export const players: Player[] = [
       gkReflexes: 10,
     },
     aiAnalysis: {
-      overallScore: 83,
+      overallScore: 76,
       strengths: ["Physical Duels", "Aerial", "Hold-up Play"],
-      marketValue: 40000000,
+      marketValue: 20000000,
     },
   }
   
